@@ -59,7 +59,7 @@ This list contains design considerations and recommended configuration options, 
                                 
                             
 * Use the Start/Stop feature in Azure Kubernetes Services (AKS).
-  > (in preview as of 11/2020) The AKS Stop/Start cluster feature now in public preview allows AKS customers to completely pause an AKS cluster, saving time and cost. The stop/start feature keeps cluster configurations in place and customers can pick up where they left off without reconfiguring the clusters.
+  > The [AKS Stop/Start cluster feature](https://docs.microsoft.com/azure/aks/start-stop-cluster) allows AKS customers to completely pause an AKS cluster, saving time and cost. The stop/start feature keeps cluster configurations in place and customers can pick up where they left off without reconfiguring the clusters.
                             
 ## Virtual Machines
 ### Configuration Recommendations

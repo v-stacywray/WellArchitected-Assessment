@@ -159,12 +159,16 @@ Resources
 * Subscribe to the AKS Roadmap and Release Notes on GitHub
   > Make sure that you're subscribed to the [public AKS Roadmap Release Notes](https://github.com/azure/aks) on GitHub to stay up-to-date on upcoming changes, improvements and most importantly Kubernetes version releases and the deprecation of old releases.
                             
-  - Regularly update to the latest version of Kubernetes.
+  - Regularly upgrade to a supported version of Kubernetes.
     > AKS supports three minor versions of Kubernetes. This means that when a new minor patch version is introduced, the oldest minor version and patch releases supported are retired. Minor updates to Kubernetes happen on a periodic basis. It is important to have a governance process to check and upgrade as needed to not fall out of support. For more information, see [Supported Kubernetes versions AKS](https://docs.microsoft.com/azure/aks/supported-kubernetes-versions).
                                 
                             
-  - Regularly process node security and kernel updates and reboots
-    > AKS supports [upgrading the images](https://docs.microsoft.com/azure/aks/node-image-upgrade) on a node to be up to date with the newest OS and runtime updates without updating the version of Kubernetes. AKS provides one new image per week with the latest updates, including Linux or Windows patches. For Linux-only deployments you can also use [kured](https://docs.microsoft.com/azure/aks/node-updates-kured).
+  - Regularly process node image updates
+    > AKS supports [upgrading the images](https://docs.microsoft.com/azure/aks/node-image-upgrade) on a node to be up to date with the newest OS and runtime updates without updating the version of Kubernetes. The AKS team provides one new image version per week with the latest updates, including Linux or Windows patches.
+                                
+                            
+  - Leverage AKS Cluster auto-upgrade with Planned Maintenance
+    > AKS supports different [auto-upgrade channels](https://docs.microsoft.com/azure/aks/upgrade-cluster#set-auto-upgrade-channel) (08/18/21 in public preview) to upgrade AKS clusters to newer versions of Kubernetes and/or newer node images once available. [Planned Maintenance](https://docs.microsoft.com/azure/aks/planned-maintenance) (08/18/21 in public preview) can be used to define maintenance windows for these operations.
                                 
                             
 * Use [Availability Zones](https://docs.microsoft.com/azure/aks/availability-zones) to maximize resilience within an Azure region by distributing AKS agent nodes across physically separate data centers.
@@ -246,7 +250,7 @@ Resources
                                 
                             
 * Use the Start/Stop feature in Azure Kubernetes Services (AKS).
-  > (in preview as of 11/2020) The AKS Stop/Start cluster feature now in public preview allows AKS customers to completely pause an AKS cluster, saving time and cost. The stop/start feature keeps cluster configurations in place and customers can pick up where they left off without reconfiguring the clusters.
+  > The [AKS Stop/Start cluster feature](https://docs.microsoft.com/azure/aks/start-stop-cluster) allows AKS customers to completely pause an AKS cluster, saving time and cost. The stop/start feature keeps cluster configurations in place and customers can pick up where they left off without reconfiguring the clusters.
                             
 ### Supporting Source Artifacts
 * Query to identify AKS clusters that are not deployed across **Availability Zones**:

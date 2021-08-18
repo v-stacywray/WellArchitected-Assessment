@@ -246,13 +246,17 @@
     "children": [
       {
         "id": "2be96a31-b3ad-4196-9bdf-23f249eee80b",
-        "title": "Regularly update to the latest version of Kubernetes.",
+        "title": "Regularly upgrade to a supported version of Kubernetes.",
         "context": "AKS supports three minor versions of Kubernetes. This means that when a new minor patch version is introduced, the oldest minor version and patch releases supported are retired. Minor updates to Kubernetes happen on a periodic basis. It is important to have a governance process to check and upgrade as needed to not fall out of support. For more information, see [Supported Kubernetes versions AKS](https://docs.microsoft.com/azure/aks/supported-kubernetes-versions)."
       },
       {
         "id": "e0766a4a-fb0f-44a7-b167-30412b54e22f",
-        "title": "Regularly process node security and kernel updates and reboots",
-        "context": "AKS supports [upgrading the images](https://docs.microsoft.com/azure/aks/node-image-upgrade) on a node to be up to date with the newest OS and runtime updates without updating the version of Kubernetes. AKS provides one new image per week with the latest updates, including Linux or Windows patches. For Linux-only deployments you can also use [kured](https://docs.microsoft.com/azure/aks/node-updates-kured)."
+        "title": "Regularly process node image updates",
+        "context": "AKS supports [upgrading the images](https://docs.microsoft.com/azure/aks/node-image-upgrade) on a node to be up to date with the newest OS and runtime updates without updating the version of Kubernetes. The AKS team provides one new image version per week with the latest updates, including Linux or Windows patches."
+      },
+      {
+        "title": "Leverage AKS Cluster auto-upgrade with Planned Maintenance",
+        "context": "AKS supports different [auto-upgrade channels](https://docs.microsoft.com/azure/aks/upgrade-cluster#set-auto-upgrade-channel) (08/18/21 in public preview) to upgrade AKS clusters to newer versions of Kubernetes and/or newer node images once available. [Planned Maintenance](https://docs.microsoft.com/azure/aks/planned-maintenance) (08/18/21 in public preview) can be used to define maintenance windows for these operations."
       }
     ]
   },
@@ -1101,7 +1105,7 @@
     "category": "Compute",
     "subCategory": "Azure Kubernetes Service (AKS)",
     "title": "Use the Start/Stop feature in Azure Kubernetes Services (AKS).",
-    "context": "(in preview as of 11/2020) The AKS Stop/Start cluster feature now in public preview allows AKS customers to completely pause an AKS cluster, saving time and cost. The stop/start feature keeps cluster configurations in place and customers can pick up where they left off without reconfiguring the clusters."
+    "context": "The [AKS Stop/Start cluster feature](https://docs.microsoft.com/azure/aks/start-stop-cluster) allows AKS customers to completely pause an AKS cluster, saving time and cost. The stop/start feature keeps cluster configurations in place and customers can pick up where they left off without reconfiguring the clusters."
   },
   {
     "id": "b14db805-f94a-4c55-8848-02a514505f41",

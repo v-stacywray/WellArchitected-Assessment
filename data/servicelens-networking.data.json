@@ -1011,7 +1011,7 @@
     ],
     "lens": "service",
     "category": "Networking",
-    "subCategory": "Azure Loadbalancer",
+    "subCategory": "Azure Load Balancer",
     "title": "For production workloads, use the Standard SKU. Basic loadbalancers do not have an SLA. Additionally, the Standard SKU [supports Availability Zones](https://docs.microsoft.com/azure/load-balancer/load-balancer-standard-availability-zones)."
   },
   {

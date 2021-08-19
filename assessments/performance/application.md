@@ -53,6 +53,16 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
     
 ### Design
             
+* Would you consider the application design to be a microservice architecture?
+
+  _As compared to a monolithic architecture--an application that is tightly coupled with synchronous communication and often a single datastore--microservices leverage concepts such as asynchronous communication, service discovery, various resiliency strategies, and each service has its own datastore._
+    - Are your microservices using independent datastores or sharing the same datastore (e.g. a single database server that has multiple databases/tables is still considered a single datastore)?
+
+      _One of the fundamental concepts of a microservice is that it uses its own datastore. Not only does this help with resiliency, but can also improve performance by reducing load on a single source, thus eliminating bottlenecks due to long-running queries._
+    - Are the datastores&#39; access restricted only to their respective service or can multiple microservices access the datastores directly?
+
+    - Are you minimizing the load on datastore?
+
 * Is the workload deployed across multiple regions?
 
   _Multiple regions should be used for failover purposes in a disaster state, as part of either re-deployment, warm-spare active-passive, or hot-spare active-active strategies. Additional cost needs to be taken into consideration - mostly from compute, data and networking perspective, but also services like [Azure Site Recovery (ASR)](https://docs.microsoft.com/azure/site-recovery/site-recovery-overview)._
@@ -83,6 +93,15 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
     - [Failover strategies](https://docs.microsoft.com/azure/availability-zones/az-overview#availability-zones)
   
     - [About Site Recovery](https://docs.microsoft.com/azure/site-recovery/site-recovery-overview)
+* When designing the application, which of the following design considerations were considered? (Latency between layers, Request time, Payload sizes, High Availability)
+
+  _When designing a new application or reviewing and existing one, there are three concepts to think about: 1) reducing latency; 2) reducing total request time; and, 3) reducing overall payload sizes. Implementing any combination of these concepts can dramatically improve overall application performance._
+* What datastores are you using? Were you able to choose the datastore during the design phase?
+
+  _Your application will most likely require more than one type of datastore depending on business requirements. Choosing the right mix and correct implementation is extremely important for optimizing application performance._
+* Was your application architected based on prescribed architecture from the Azure Architecture Center or a Cloud Design Pattern?
+
+  _Starting with a prescribed, proven architecture may help with alleviating some basic performance issues. It is suggested to check out the Azure Architecture Center and Cloud Design Patterns to determine if the application's architecture is similar._
 * Is the application architecture designed to use Availability Zones within a region?
 
   _[Availability Zones](https://docs.microsoft.com/azure/availability-zones/az-overview#availability-zones) can be used to optimize application availability within a region by providing datacenter level fault tolerance. However, the application architecture must not share dependencies between zones to use them effectively. It is also important to note that Availability Zones may introduce performance and cost considerations for applications which are extremely 'chatty' across zones given the implied physical separation between each zone and inter-zone bandwidth charges. That also means that AZ can be considered to get higher Service Level Agreement (SLA) for lower cost. Be aware of [pricing changes](https://azure.microsoft.com/pricing/details/bandwidth/) coming to Availability Zone bandwidth starting February 2021._
@@ -113,25 +132,6 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
   
     Additional resources:
     - [Design to scale out](https://docs.microsoft.com/azure/architecture/guide/design-principles/scale-out)
-* Was your application architected based on prescribed architecture from the Azure Architecture Center or a Cloud Design Pattern?
-
-  _Starting with a prescribed, proven architecture may help with alleviating some basic performance issues. It is suggested to check out the Azure Architecture Center and Cloud Design Patterns to determine if the application's architecture is similar._
-* When designing the application, which of the following design considerations were considered? (Latency between layers, Request time, Payload sizes, High Availability)
-
-  _When designing a new application or reviewing and existing one, there are three concepts to think about: 1) reducing latency; 2) reducing total request time; and, 3) reducing overall payload sizes. Implementing any combination of these concepts can dramatically improve overall application performance._
-* What datastores are you using? Were you able to choose the datastore during the design phase?
-
-  _Your application will most likely require more than one type of datastore depending on business requirements. Choosing the right mix and correct implementation is extremely important for optimizing application performance._
-* Would you consider the application design to be a microservice architecture?
-
-  _As compared to a monolithic architecture--an application that is tightly coupled with synchronous communication and often a single datastore--microservices leverage concepts such as asynchronous communication, service discovery, various resiliency strategies, and each service has its own datastore._
-    - Are your microservices using independent datastores or sharing the same datastore (e.g. a single database server that has multiple databases/tables is still considered a single datastore)?
-
-      _One of the fundamental concepts of a microservice is that it uses its own datastore. Not only does this help with resiliency, but can also improve performance by reducing load on a single source, thus eliminating bottlenecks due to long-running queries._
-    - Are the datastores&#39; access restricted only to their respective service or can multiple microservices access the datastores directly?
-
-    - Are you minimizing the load on datastore?
-
 ### Targets &amp; Non-Functional Requirements
             
 * Are you able to predict general application usage?
@@ -170,6 +170,14 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
       > Automation and specialized tooling (such as Application Insights) should be used to orchestrate and measure application performance
 ### Transactional
             
+* Does your application have any long-running tasks or workflow scenarios?
+
+  _You can offload a long-running task or a multi-step workflow process to a separate, dedicated workers instead of using the application's resources to handle it. To handle this scenario, you can add tasks (messages) to a queue and have a dedicated worker listening to the queue to pick up a message and process it._
+    - Where possible, have tasks been configured to execute in parallel?
+
+      _There are many ways to handle long-running tasks. The common way is to use parallel execution threads and leverage WaitAll or WaitAny process waits. However, using these methods introduce blocking on threads and can have large, detrimental performance hits on applications, especially distributed applications. Additionally, the blocks can prevent the execution of other tasks that may not have a dependency on the data at the current code position. Instead, it is better to follow asynchronous models and leverage message queuing for long-running tasks. In this pattern, tasks publish and subscribe to data on the queue and tasks can execute as soon as the data is made available._
+    - Are long-running tasks and workflows leveraging durable functions?
+
 * Can you measure the efficiency of the connections that are created to external services and datastores?
 
   _It is important to be able to determine the total time for a round-robin between your application and its data source. This enables you to establish a baseline in which to measure against future changes along with calculating the cumulative effect of a single request to a service. It may help to leverage connection pooling or a connection multiplexer in order to reduce the need to create and close connections each time you need to communicate with a service. This helps to reduce the CPU overhead on the server that maintains all of those connections. When communicating with a service using an HttpClient or similar type of object, always create this object once and reuse it for subsequent requests. Ways to instantiate an object once can use the Singleton pattern of Dependency Injection or storing the object in a static variable._
@@ -179,24 +187,17 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
 * Does your application batch requests?
 
   _Creating a lot of individual requests has a tremendous amount of overhead for the producer and consumer of those requests. This will also increase bandwidth as certain elements of data are included in each request. If an API supports batching, you can batch all of the requests (the batch size varies by API and payload size) into a single request. The server will receive the one batched request and process all of the contained, individual requests. This better leverages the server's resources so that the requests can be processed much faster._
-* Does your application have any long-running tasks or workflow scenarios?
-
-  _You can offload a long-running task or a multi-step workflow process to a separate, dedicated workers instead of using the application's resources to handle it. To handle this scenario, you can add tasks (messages) to a queue and have a dedicated worker listening to the queue to pick up a message and process it._
-    - Where possible, have tasks been configured to execute in parallel?
-
-      _There are many ways to handle long-running tasks. The common way is to use parallel execution threads and leverage WaitAll or WaitAny process waits. However, using these methods introduce blocking on threads and can have large, detrimental performance hits on applications, especially distributed applications. Additionally, the blocks can prevent the execution of other tasks that may not have a dependency on the data at the current code position. Instead, it is better to follow asynchronous models and leverage message queuing for long-running tasks. In this pattern, tasks publish and subscribe to data on the queue and tasks can execute as soon as the data is made available._
-    - Are long-running tasks and workflows leveraging durable functions?
-
 ## Health Modelling &amp; Monitoring
     
 ### Application Level Monitoring
             
-* Are application logs collected from different application environments?
+* Is it possible to evaluate critical application performance targets and non-functional requirements (NFRs)?
 
-  _Application logs support the end-to-end application lifecycle. Logging is essential in understanding how the application operates in various environments and what events occur and under which conditions._
-  > Collect application logs across application environments
-  > 
-  > *Application logs and events should be collected across all major environments. Sufficient degree of separation and filtering should be in place to ensure non-critical environments do not convolute production log interpretation. Furthermore, corresponding log entries across the application should capture a correlation ID for their respective transactions.*
+  > Application level metrics should include end-to-end transaction times of key technical functions, such as database queries, response times for external API calls, failure rates of processing steps, etc.
+    - Is the end-to-end performance of critical system flows monitored?
+
+      _To fully assess the health of key scenarios in the context of targets and NFRs, application log events across critical system flows should be correlated._
+      > Correlate application log events across critical system flows, such as user login
 * Are log messages captured in a structured format?
 
   _Structured format, following well-known schema can help in parsing and analyzing logs._
@@ -212,26 +213,19 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
   
     Additional resources:
     - [Distributed tracing](https://docs.microsoft.com/azure/architecture/microservices/logging-monitoring#distributed-tracing)
-* Is it possible to evaluate critical application performance targets and non-functional requirements (NFRs)?
-
-  > Application level metrics should include end-to-end transaction times of key technical functions, such as database queries, response times for external API calls, failure rates of processing steps, etc.
-    - Is the end-to-end performance of critical system flows monitored?
-
-      _To fully assess the health of key scenarios in the context of targets and NFRs, application log events across critical system flows should be correlated._
-      > Correlate application log events across critical system flows, such as user login
 * Do you have detailed instrumentation in the application code?
 
   _Instrumentation of your code allows precise detection of underperforming pieces when load or stress tests are applied. It is critical to have this data available to improve and identify performance opportunities in the application code. Application Performance Monitoring (APM) tools, such as Application Insights, should be used to manage the performance and availability of the application, along with aggregating application level logs and events for subsequent interpretation._
+* Are application logs collected from different application environments?
+
+  _Application logs support the end-to-end application lifecycle. Logging is essential in understanding how the application operates in various environments and what events occur and under which conditions._
+  > Collect application logs across application environments
+  > 
+  > *Application logs and events should be collected across all major environments. Sufficient degree of separation and filtering should be in place to ensure non-critical environments do not convolute production log interpretation. Furthermore, corresponding log entries across the application should capture a correlation ID for their respective transactions.*
 ### Resource and Infrastructure Level Monitoring
             
-* Which log aggregation technology is used to collect logs and metrics from Azure resources?
+* Are you tracking when resources scale in and out?
 
-  _Log aggregation technologies, such as Azure Log Analytics or Splunk, should be used to collate logs and metrics across all application components for subsequent evaluation. Resources may include Azure IaaS and PaaS services as well as 3rd-party appliances such as firewalls or anti-malware solutions used in the application. For instance, if Azure Event Hub is used, the [Diagnostic Settings](https://docs.microsoft.com/azure/event-hubs/event-hubs-diagnostic-logs) should be configured to push logs and metrics to the data sink. Understanding usage helps with right-sizing of the workload, but additional cost for logging needs to be accepted and included in the cost model._
-  > Use log aggregation technology, such as Azure Log Analytics or Splunk, to gather information across all application components
-* Are you collecting Azure Activity Logs within the log aggregation tool?
-
-  _Azure Activity Logs provide audit information about when an Azure resource is modified, such as when a virtual machine is started or stopped. Such information is extremely useful for the interpretation and troubleshooting of operational and performance issues, as it provides transparency around configuration changes._
-  > Azure Activity Logs should be collected and aggregated
 * Is resource-level monitoring enforced throughout the application?
 
   _Resource- or infrastructure-level monitoring refers to the used platform services such as Azure VMs, Express Route or SQL Database. But also covers 3rd-party solutions like an NVA._
@@ -240,12 +234,18 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
 
   _To be able to build a robust application health model it is vital that visibility into the operational state of critical internal dependencies, such as a shared NVA or Express Route connection, be achieved._
   > Collect and store logs and key metrics of critical components
-* Are scaling policies configured to use appropriate metrics?
-
-* Are you tracking when resources scale in and out?
-
 * Is there an overall monitoring strategy for scalability and performance?
 
+* Which log aggregation technology is used to collect logs and metrics from Azure resources?
+
+  _Log aggregation technologies, such as Azure Log Analytics or Splunk, should be used to collate logs and metrics across all application components for subsequent evaluation. Resources may include Azure IaaS and PaaS services as well as 3rd-party appliances such as firewalls or anti-malware solutions used in the application. For instance, if Azure Event Hub is used, the [Diagnostic Settings](https://docs.microsoft.com/azure/event-hubs/event-hubs-diagnostic-logs) should be configured to push logs and metrics to the data sink. Understanding usage helps with right-sizing of the workload, but additional cost for logging needs to be accepted and included in the cost model._
+  > Use log aggregation technology, such as Azure Log Analytics or Splunk, to gather information across all application components
+* Are scaling policies configured to use appropriate metrics?
+
+* Are you collecting Azure Activity Logs within the log aggregation tool?
+
+  _Azure Activity Logs provide audit information about when an Azure resource is modified, such as when a virtual machine is started or stopped. Such information is extremely useful for the interpretation and troubleshooting of operational and performance issues, as it provides transparency around configuration changes._
+  > Azure Activity Logs should be collected and aggregated
 ### Dependencies
             
 * Are critical external dependencies monitored?
@@ -256,6 +256,12 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
   > *Critical external dependencies, such as an API service, should be monitored to ensure operational visibility of dependency health. For instance, a probe could be used to measure the availability and latency of an external API.*
 ### Data Interpretation &amp; Health Modelling
             
+* Are long-term trends analyzed to predict performance issues before they occur?
+
+  _Analytics can and should be performed across long-term operational data to help inform on the history of application performance and detect if there have been any regressions. For instance, if the average response times have been slowly increasing over time and getting closer to maximum target._
+* Have retention times for logs and metrics been defined and with housekeeping mechanisms configured?
+
+  > Clear retention times should be defined to allow for suitable historic analysis but also control storage costs. Suitable housekeeping tasks should also be used to archive data to cheaper storage or aggregate data for long-term trend analysis.
 * Are application and resource level logs aggregated in a single data sink, or is it possible to cross-query events at both levels?
 
   _To build a robust application health model it is vital that application and resource level data be correlated and evaluated together to optimize the detection of issues and troubleshooting of detected issues._
@@ -275,31 +281,10 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
     - Can the health model determine if the application is performing at expected performance targets?
 
       _The health model should have the ability to evaluate application performance as a part of the application's overall health state_
-* Have retention times for logs and metrics been defined and with housekeeping mechanisms configured?
-
-  > Clear retention times should be defined to allow for suitable historic analysis but also control storage costs. Suitable housekeeping tasks should also be used to archive data to cheaper storage or aggregate data for long-term trend analysis.
-* Are long-term trends analyzed to predict performance issues before they occur?
-
-  _Analytics can and should be performed across long-term operational data to help inform on the history of application performance and detect if there have been any regressions. For instance, if the average response times have been slowly increasing over time and getting closer to maximum target._
 ## Capacity &amp; Service Availability Planning
     
 ### Scalability &amp; Capacity Model
             
-* Is there a capacity model for the application?
-
-  _A capacity model should describe the relationships between the utilization of various components as a ratio, to capture when and how application components should scale-out._
-  > A capacity model should describe the relationships between the utilization of various components as a ratio, to capture when and how application components should scale-out. For instance, scaling the number of Application Gateway v2 instances may put excess pressure on downstream components unless also scaled to a degree. When modelling capacity for critical system components it is therefore recommended that an N+1 model be applied to ensure complete tolerance to transient faults, where N describes the capacity required to satisfy performance and availability requirements. This also prevents cost-related surprises when scaling out and realizing that multiple services need to be scaled at the same time.
-  
-    Additional resources:
-    - [Performance Efficiency - Capacity](https://docs.microsoft.com/azure/architecture/framework/scalability/capacity)
-* Is auto-scaling enabled for supporting PaaS and IaaS services?
-
-  _Are built-in capabilities for automatic scale being used vs. scaling being always a manual decision?_
-  > Leveraging built-in Auto-scaling capabilities can help to maintain system reliability in times of increased demand while not needing to overprovision resources up-front, by letting a service automatically scale within a pre-configured range of resources. It greatly simplifies management and operational burdens. However, it must take into account the capacity model, else automated scaling of one component can impact downstream services if those are not also automatically scaled accordingly.
-* Is the process to provision and deprovision capacity codified?
-
-  _Codifying and automating the process helps to avoid human error, varying results and to speed up the overall process._
-  > Fluctuation in application traffic is typically expected. To ensure optimal operation is maintained, such variations should be met by automated scalability. The significance of automated capacity responses underpinned by a robust capacity model was highlighted by the COVID-19 crisis where many applications experienced severe traffic variations. While Auto-scaling enables a PaaS or IaaS service to scale within a pre-configured (and often times limited) range of resources, is provisioning or de-provisioning capacity a more advanced and complex process of for example adding additional scale units like additional clusters, instances or deployments. The process should be codified, automated and the effects of adding/removing capacity should be well understood.
 * Is the required capacity (initial and future growth) within Azure service scale limits and quotas?
 
   _Due to physical and logical resource constraints within the platform, Azure must apply [limits and quotas](https://docs.microsoft.com/azure/azure-resource-manager/management/azure-subscription-service-limits) to service scalability, which may be either hard or soft._
@@ -314,6 +299,16 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
   
     Additional resources:
     - [Azure subscription and service limits, quotas, and constraints](https://docs.microsoft.com/azure/azure-resource-manager/management/azure-subscription-service-limits)
+* Are you confident that the correct SKUs and configurations have been applied to the services in order to support your anticipated loads?
+
+  _Understand which SKUs you have selected and ensure that they are the correct size. Additionally, ensure you understand the configuration of those SKUs (e.g. auto-scale settings for Application Gateways and App Services)._
+* Is there a capacity model for the application?
+
+  _A capacity model should describe the relationships between the utilization of various components as a ratio, to capture when and how application components should scale-out._
+  > A capacity model should describe the relationships between the utilization of various components as a ratio, to capture when and how application components should scale-out. For instance, scaling the number of Application Gateway v2 instances may put excess pressure on downstream components unless also scaled to a degree. When modelling capacity for critical system components it is therefore recommended that an N+1 model be applied to ensure complete tolerance to transient faults, where N describes the capacity required to satisfy performance and availability requirements. This also prevents cost-related surprises when scaling out and realizing that multiple services need to be scaled at the same time.
+  
+    Additional resources:
+    - [Performance Efficiency - Capacity](https://docs.microsoft.com/azure/architecture/framework/scalability/capacity)
 * Is capacity utilization monitored and used to forecast future growth?
 
   _Predicting future growth and capacity demands can prevent outages due to insufficient provisioned capacity over time._
@@ -321,9 +316,14 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
   
     Additional resources:
     - [Supported metrics with Azure Monitor](https://docs.microsoft.com/azure/azure-monitor/platform/metrics-supported)
-* Are you confident that the correct SKUs and configurations have been applied to the services in order to support your anticipated loads?
+* Is auto-scaling enabled for supporting PaaS and IaaS services?
 
-  _Understand which SKUs you have selected and ensure that they are the correct size. Additionally, ensure you understand the configuration of those SKUs (e.g. auto-scale settings for Application Gateways and App Services)._
+  _Are built-in capabilities for automatic scale being used vs. scaling being always a manual decision?_
+  > Leveraging built-in Auto-scaling capabilities can help to maintain system reliability in times of increased demand while not needing to overprovision resources up-front, by letting a service automatically scale within a pre-configured range of resources. It greatly simplifies management and operational burdens. However, it must take into account the capacity model, else automated scaling of one component can impact downstream services if those are not also automatically scaled accordingly.
+* Is the process to provision and deprovision capacity codified?
+
+  _Codifying and automating the process helps to avoid human error, varying results and to speed up the overall process._
+  > Fluctuation in application traffic is typically expected. To ensure optimal operation is maintained, such variations should be met by automated scalability. The significance of automated capacity responses underpinned by a robust capacity model was highlighted by the COVID-19 crisis where many applications experienced severe traffic variations. While Auto-scaling enables a PaaS or IaaS service to scale within a pre-configured (and often times limited) range of resources, is provisioning or de-provisioning capacity a more advanced and complex process of for example adding additional scale units like additional clusters, instances or deployments. The process should be codified, automated and the effects of adding/removing capacity should be well understood.
 ### Service Availability
             
 * Is the required capacity (initial and future growth) available within targeted regions?
@@ -362,6 +362,10 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
     
 ### Data Size/Growth
             
+* Is the workload data designed for eventual consistency?
+
+* Is the workload's data normalized appropriately?
+
 * Do you know the growth rate of your data?
 
   _Your solution might work great in the first week or month, but what happens when data just keeps increasing? Will the solution slow down, or will it even break at a particular threshold? Planning for data growth, data retention, and archiving is essential in capacity planning. Without adequately planning capacity for your datastores, performance will be negatively affected._
@@ -370,37 +374,33 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
   _Scale limits and recovery options should be assessed in the context of target data sizes and growth rates to ensure suitable capacity exists._
 * Are the plans for data growth and retention documented?
 
-* Is the workload data designed for eventual consistency?
-
-* Is the workload's data normalized appropriately?
-
 ### Data Latency and Throughput
             
-* Are latency targets defined, tested, and validated for key scenarios?
-
-  _Latency targets, which are commonly defined as first byte in to last byte out, should be defined and measured for key application scenarios, as well as each individual component, to validate overall application performance and health._
 * Are throughput targets defined, tested, and validated for key scenarios?
 
   _Throughput targets, which are commonly defined in terms of IOPS, MB/s and Block Size, should be defined and measured for key application scenarios, as well as each individual component, to validate overall application performance and health. Available throughput typically varies based on SKU, so defined targets should be used to inform the use of appropriate SKUs._
 * Are you using database replicas and data partitioning?
 
   _Database replicas and data partitioning can improve application performance by providing multiple copies of the data and/or reducing the taxation of database operations. Both mechanisms involve conversations and planning between developers and database administrators._
+* Are latency targets defined, tested, and validated for key scenarios?
+
+  _Latency targets, which are commonly defined as first byte in to last byte out, should be defined and measured for key application scenarios, as well as each individual component, to validate overall application performance and health._
 ### Network Throughput and Latency
             
+* Does the application require dedicated bandwidth?
+
+  _Applications with stringent throughput requirements may require dedicated bandwidth to remove the risks associated with noisy neighbor scenarios._
 * Are there any components/scenarios that are very sensitive to network latency?
 
   _Components or scenarios that are sensitive to network latency may indicate a need for co-locality within a single Availability Zone or even closer using [Proximity Placement Groups](https://docs.microsoft.com/azure/virtual-machines/windows/co-location#proximity-placement-groups) with Accelerated Networking enabled._
   
     Additional resources:
     - [Proximity Placement Groups](https://docs.microsoft.com/azure/virtual-machines/windows/co-location#proximity-placement-groups)
-* Does the application require dedicated bandwidth?
-
-  _Applications with stringent throughput requirements may require dedicated bandwidth to remove the risks associated with noisy neighbor scenarios._
 ### Elasticity
             
-* Can the workload scale horizontally in response to changing load?
+* Has the time to scale in/out been measured?
 
-  _A scale-unit approach should be taken to ensure that each application component and the application as a whole can scale effectively in response to changing demand. A robust capacity model should be used to define when and how the application should scale._
+  _Time to scale-in and scale-out can vary between Azure services and instance sizes and should be assessed to determine if a certain amount of pre-scaling is required to handle scale requirements and expected traffic patterns, such as seasonal load variations._
 * Is autoscaling enabled and integrated within Azure Monitor?
 
   _Autoscaling can be leveraged to address unanticipated peak loads to help prevent application outages caused by overloading._
@@ -409,9 +409,9 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
       _The scaling on any single component may have an impact on downstream application components and dependencies. Autoscaling should therefore be tested regularly to help inform and validate a capacity model describing when and how application components should scale._
     - Is autoscaling configured with automatic schedule to add resources based on time of day trends?
 
-* Has the time to scale in/out been measured?
+* Can the workload scale horizontally in response to changing load?
 
-  _Time to scale-in and scale-out can vary between Azure services and instance sizes and should be assessed to determine if a certain amount of pre-scaling is required to handle scale requirements and expected traffic patterns, such as seasonal load variations._
+  _A scale-unit approach should be taken to ensure that each application component and the application as a whole can scale effectively in response to changing demand. A robust capacity model should be used to define when and how the application should scale._
 ## Operational Procedures
     
 ### Configuration &amp; Secrets Management
@@ -452,9 +452,6 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
     
 ### Tools &amp; Planning
             
-* Have you identified the required human and environment resources needed to create performance tests?
-
-  _Successfully implementing meaningful performance tests requires a number of resources. If is not just a single developer or QA Analyst running some tests on their local machine. Instead, performance tests need a test environment (also known as a test bed) that tests can be executed against without interfering with production environments and data. Performance testing requires input and commitment from developers, architects, database administrators, and network administrators. In short, solid performance testing is a team responsibility.<br />Additionally, to run scaled tests, a machine with enough resources (e.g. memory, processors, network connections, etc.) needs to be made available. While this machine can be located within a data center or on-premises, it is often advantageous to perform performance testing from instances located from multiple geographies. This better simulates what an end-user can expect._
 * Are you currently using tools for conducting performance testing?
 
   _There are various performance testing tools available for DevOps. Some tools like JMeter only perform testing against endpoints and tests HTTP statuses. Other tools like K6 and Selenium can perform tests that also check data quality and variations. Application Insights, while not necessarily designed to test server load, can test the performance of an application within the user's browser. When determining what testing tools you will implement, it is always important to remember what type of performance testing you are attempting to execute._
@@ -466,11 +463,38 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
       _Performance testing can be initiated within the client's browser, full integration testing (e.g. testing the response of multiple endpoints required to comprise the data of a single page), or testing the performance of a single API endpoint. As stated under the previous question, having a clear vision of the areas you are attempting to test will help identify the tools you will need._
     - Considering the three major application layers of frontend, services, and database, what parts of the application are being tested for performance?
 
+* Have you identified the required human and environment resources needed to create performance tests?
+
+  _Successfully implementing meaningful performance tests requires a number of resources. If is not just a single developer or QA Analyst running some tests on their local machine. Instead, performance tests need a test environment (also known as a test bed) that tests can be executed against without interfering with production environments and data. Performance testing requires input and commitment from developers, architects, database administrators, and network administrators. In short, solid performance testing is a team responsibility.<br />Additionally, to run scaled tests, a machine with enough resources (e.g. memory, processors, network connections, etc.) needs to be made available. While this machine can be located within a data center or on-premises, it is often advantageous to perform performance testing from instances located from multiple geographies. This better simulates what an end-user can expect._
 * Have you identified all services being utilized in Azure (and on-prem) that need to be measured?
 
   _Your assessment may already be complete, but it helps to identify some currently utilized systems to being measuring load capacity. Once these environments have been identified, created benchmarks should include these systems._
 ### Benchmarking
             
+* Do you have goals for database queries?
+
+  _Ensuring the data operations are optimized is a key component to any performance assessment. It is important to understand what data is being queried and when. The data life-cycle, if abused, can adversely affect the performance of any application (or microservice). Confirm that a database administrator (a data architect is preferred) is part of the assessment as they will have the necessary tools for monitoring and optimizing a database and its queries._
+    - What are your goals for an individual database query execution and response?
+
+    - How often are you achieving your goals for database query execution?
+
+* How do you know when you have reached acceptable efficiency?
+
+  _There is almost no limit to how much an application can be performance-tuned. How do you know when you have tuned an application enough? It really comes down to the 80/20 rule--generally, 80% of the application can be optimized by focusing on just 20%. While you can continue optimizing certain elements of the application, after optimizing the initial 20%, a company typically sees a diminishing return on any further optimization. The question the customer must answer is how much of the remaining 80% of the application is worth optimizing for the business. In other words, how much will optimizing the remaining 80% help the business reach its goals (e.g. customer acquisition/retention, sales, etc.)? The business must determine their own realistic definition of "acceptable."_
+* Do you have goals for latency between systems/microservices?
+
+  _Performance should not only be monitored within the application itself, but response times between service tiers should also be noted. While this is important for n-Tier applications, it is especially crucial for microservices. Most microservices leverage some type of pub-sub architecture where communication is asynchronous. However, validation for sending and receiving messages should still take place. In these instances, understanding the routing and latency between services is imperative to improving performance._
+    - What are your goals for a complete response from a given microservice?
+
+    - How often are you achieving your microservice response goals?
+
+* Do you have goals defined for server response times?
+
+  _Similar to previous questions regarding the initial connection to a service, you will also want to understand how long it takes for the server to receive, process, and then return data. This round-trip can also help ensure that enough hardware resources have been assigned to the environment. Additionally, it is possible to identify "noisy neighbors", applications running on the same disk (typically in a virtualized environment) or sharing the same network, that are consuming available resources. Finally, another bottleneck in many environments is traffic on a network that is being shared with a data store (e.g. SQL). If an application server and its database server share the same network as general traffic, then the overall performance of the application can be greatly affected._
+    - What are your goals for a full server response?
+
+    - How often are you achieving your server response goals?
+
 * Have you identified goals or baselines for application performance?
 
   _There are many types of goals when determining baselines for application performance. Perhaps baselines center around a certain number of visitors within a given time period, the time it takes to render a page, type  required for executing a stored procedure, or a desired number of transactions if your site conducts some type of e-commerce. It is important to identify and maintain a shared understanding of these baselines so that you can architect a system that meets them.<br />Baselines can vary based on types of connections or platforms that a user may leverage for accessing the application. It may be important to establish baselines that address the diversity of connections, platforms, and other elements (like time of day, or weekday versus weekend)._
@@ -494,35 +518,8 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
 
     - How often are you achieving your API response goals?
 
-* Do you have goals defined for server response times?
-
-  _Similar to previous questions regarding the initial connection to a service, you will also want to understand how long it takes for the server to receive, process, and then return data. This round-trip can also help ensure that enough hardware resources have been assigned to the environment. Additionally, it is possible to identify "noisy neighbors", applications running on the same disk (typically in a virtualized environment) or sharing the same network, that are consuming available resources. Finally, another bottleneck in many environments is traffic on a network that is being shared with a data store (e.g. SQL). If an application server and its database server share the same network as general traffic, then the overall performance of the application can be greatly affected._
-    - What are your goals for a full server response?
-
-    - How often are you achieving your server response goals?
-
-* Do you have goals for latency between systems/microservices?
-
-  _Performance should not only be monitored within the application itself, but response times between service tiers should also be noted. While this is important for n-Tier applications, it is especially crucial for microservices. Most microservices leverage some type of pub-sub architecture where communication is asynchronous. However, validation for sending and receiving messages should still take place. In these instances, understanding the routing and latency between services is imperative to improving performance._
-    - What are your goals for a complete response from a given microservice?
-
-    - How often are you achieving your microservice response goals?
-
-* Do you have goals for database queries?
-
-  _Ensuring the data operations are optimized is a key component to any performance assessment. It is important to understand what data is being queried and when. The data life-cycle, if abused, can adversely affect the performance of any application (or microservice). Confirm that a database administrator (a data architect is preferred) is part of the assessment as they will have the necessary tools for monitoring and optimizing a database and its queries._
-    - What are your goals for an individual database query execution and response?
-
-    - How often are you achieving your goals for database query execution?
-
-* How do you know when you have reached acceptable efficiency?
-
-  _There is almost no limit to how much an application can be performance-tuned. How do you know when you have tuned an application enough? It really comes down to the 80/20 rule--generally, 80% of the application can be optimized by focusing on just 20%. While you can continue optimizing certain elements of the application, after optimizing the initial 20%, a company typically sees a diminishing return on any further optimization. The question the customer must answer is how much of the remaining 80% of the application is worth optimizing for the business. In other words, how much will optimizing the remaining 80% help the business reach its goals (e.g. customer acquisition/retention, sales, etc.)? The business must determine their own realistic definition of "acceptable."_
 ### Load Capacity
             
-* How much of the application is involved in serving an immediate, single request?
-
-  _When understanding load and demands on the application, it is necessary to understand how the application is architected - whether monolithic, n-Tier, or microservice-based - and then understand how load is distributed across the application. This is crucial for focusing on the testing of individual components and identifying bottlenecks._
 * Have you determined an acceptable operational margin between your peak utilization and the applications maximum load?
 
   _What is the maximum taxation you wish to place on resources? Factors such as memory, CPU, and disk IOPS should all be considered. Once a stress test has been performed resulting in the maximum supported load and an operational margin has been chosen, it is best to determine an operational threshold. Then, environment scaling (automatic or manual) can be performed once the threshold has been reached._
@@ -551,18 +548,20 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
 
       _Available data caching technologies are for example:<br />- Azure Redis Cache<br />- IIS Caching Server<br />- SQL Caching Server<br />- Disk<br />- Other solution_
       > Azure Cache for Redis is a preferred solution for data caching as it improves performance by storing data in memory instead of on disk like SQL Server. Certain development frameworks like .NET also have mechanisms for caching data at the server level.
+* How much of the application is involved in serving an immediate, single request?
+
+  _When understanding load and demands on the application, it is necessary to understand how the application is architected - whether monolithic, n-Tier, or microservice-based - and then understand how load is distributed across the application. This is crucial for focusing on the testing of individual components and identifying bottlenecks._
 ### Troubleshooting
             
+* Do you profile the application code with any profiling tools?
+
+  _Application profiling will involve tooling like Visual Studio Performance Profile, AQTime, dotTrace, and others. These tools will give you in-depth analysis of individual code paths._
+* Do you profile the network with any traffic capturing tools?
+
+  _Network capture tooling can capture the network traffic and dive deeper into the interactions at the network layer that may affect your application due to network configuration and/or other network traffic issues._
 * Does the application spend a lot of time in the database?
 
   _Applications that spend a lot of execution time in the database layers can benefit from a database tuning analysis. This analysis will only focus on the data tier components and may require special resources such as DBA's to tune queries, indexes, execution plans, and more._
-* Does the application have high CPU or memory utilization?
-
-  _If the application has very high CPU or memory utilization, then consider scaling the application either horizontal or vertical. Scaling horizontal to more compute resources will spread the load across more machines. This will, however, increase the network complexity as there will be more machines to support the system. Scaling the application vertical to a larger machine this is optimized for higher CPU or memory workloads may also be considered. Profiling the application code can be useful to find code structures that may be sub-optimal and replace them with better-optimized code. These decisions are a balance of several factors that can include cost, system complexity, and time to implement._
-    - Have you identified the length of time it takes before CPU or memory increases?
-
-    - How long does it take for system resources to return to &#34;normal?&#34;
-
 * Does the application response times increase while not using all the CPU or memory allocated to the system regardless of the load?
 
   _When the system response times increase without any increase in the CPU or memory, this is an indicator that there is a resource that is time-blocked. This can mean many things such as thread sleep, connection wait, message queueing, etc. The list can go on. The bottom line is there is something that is consuming time but not compute resources. Try to locate these issues with tracing data that can deliver time spans for each layer of the application architecture that is correlated to an application transaction._
@@ -570,9 +569,9 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
 
     - How long does it take for response times to return to &#34;normal?&#34;
 
-* Do you profile the application code with any profiling tools?
+* Does the application have high CPU or memory utilization?
 
-  _Application profiling will involve tooling like Visual Studio Performance Profile, AQTime, dotTrace, and others. These tools will give you in-depth analysis of individual code paths._
-* Do you profile the network with any traffic capturing tools?
+  _If the application has very high CPU or memory utilization, then consider scaling the application either horizontal or vertical. Scaling horizontal to more compute resources will spread the load across more machines. This will, however, increase the network complexity as there will be more machines to support the system. Scaling the application vertical to a larger machine this is optimized for higher CPU or memory workloads may also be considered. Profiling the application code can be useful to find code structures that may be sub-optimal and replace them with better-optimized code. These decisions are a balance of several factors that can include cost, system complexity, and time to implement._
+    - Have you identified the length of time it takes before CPU or memory increases?
 
-  _Network capture tooling can capture the network traffic and dive deeper into the interactions at the network layer that may affect your application due to network configuration and/or other network traffic issues._
+    - How long does it take for system resources to return to &#34;normal?&#34;

@@ -18,9 +18,9 @@ This list contains design considerations and recommended configuration options, 
     - [Storage Accounts](#Storage-Accounts)
     - [Disks](#Disks)
   - [Networking](#Networking)
+    - [API Management](#API-Management)
     - [Network Virtual Appliances (NVA)](#Network-Virtual-Appliances-NVA)
     - [Network Connectivity](#Network-Connectivity)
-    - [API Management](#API-Management)
     - [IP Addresses](#IP-Addresses)
   - [Monitoring](#Monitoring)
     - [Log Analytics Workspace](#Log-Analytics-Workspace)
@@ -32,14 +32,14 @@ This list contains design considerations and recommended configuration options, 
 * Consider the cost savings of using App Service Premium v3 plan over the Premium v2 plan.
   > The App Service Premium (v3) Plan has a 20% discount versus comparable Pv2 configurations. Reserved Instance commitment (1Y, 3Y, Dev/Test) discounts are available for App Services running in the Premium v3 plan.
                             
-* Consider Basic or Free tier for non-production usage.
-  > For non-prod App Service Plans consider scaling them to Basic or Free Tier and scale up as needed and scale down when not in use – e.g. during Load Test exercise or based on the capabilities provided (custom domain, SSL, etc.).
-                            
 * Always use a scale-out and scale-in rule combination.
   > If you use only one part of the combination, autoscale will only take action in a single direction (scale out, or in) until it reaches the maximum, or minimum instance counts of defined in the profile. This is not optimal, ideally you want your resource to scale up at times of high usage to ensure availability. Similarly, at times of low usage you want your resource to scale down, so you can realize cost savings.
                             
 * Understand the behavior of multiple scaling rules in a profile.
   > There are cases where you may have to set multiple rules in a profile. On scale-out, autoscale runs if ANY rule is met. On scale-in, autoscale requires ALL rules to be met.
+                            
+* Consider Basic or Free tier for non-production usage.
+  > For non-prod App Service Plans consider scaling them to Basic or Free Tier and scale up as needed and scale down when not in use – e.g. during Load Test exercise or based on the capabilities provided (custom domain, SSL, etc.).
                             
 ## Azure Kubernetes Service (AKS)
 ### Configuration Recommendations
@@ -63,23 +63,23 @@ This list contains design considerations and recommended configuration options, 
                             
 ## Virtual Machines
 ### Configuration Recommendations
-* Perform a review of SKUs that could benefit from Reserved Instances for 1 or 3 years or more.
-  > Purchasing reserved instances is a way to reduce Azure costs for workloads with stable usage. You have to manage utilization: if it’s too low then you are paying for resources that are not being used. One advice is to keep RI instances simple and not trying to have too much management overhead that has to be factored in as well as part of the cost.
-                            
-* Consider using Burstable (B) series VM sizes for VMs that are idle most of the time and have high usage for a certain period of time.
-  > The B-series VMs are ideal for workloads that do not need the full performance of the CPU continuously (like web servers, proof of concepts, small databases and development build environments).
-                            
 * Shut down VM instances which are not in use.
   > Use the Start/Stop VMs during off-hours feature of virtual machines to minimize waste. There are many configuration options to schedule start the stop times. The feature is suitable as a low-cost automation option. Azure Advisor evaluates virtual machines based on CPU and network utilization over a time period and recommends actions like shut down or resize instances.
-                            
-* Use Spot VMs when appropriate.
-  > Spot VMs are ideal for workloads that can be interrupted, such as highly parallel batch processing jobs. These VMs take advantage of the surplus capacity in Azure at a lower cost. They're also well suited for experimenting, development and testing of large-scale solutions.
                             
 * Consider PaaS as an alternative to virtual machines.
   > When you use the PaaS model, operational and maintenance costs are included in the pricing and in some cases can be cheaper than managing VMs on your own.
                             
+* Use Spot VMs when appropriate.
+  > Spot VMs are ideal for workloads that can be interrupted, such as highly parallel batch processing jobs. These VMs take advantage of the surplus capacity in Azure at a lower cost. They're also well suited for experimenting, development and testing of large-scale solutions.
+                            
+* Consider using Burstable (B) series VM sizes for VMs that are idle most of the time and have high usage for a certain period of time.
+  > The B-series VMs are ideal for workloads that do not need the full performance of the CPU continuously (like web servers, proof of concepts, small databases and development build environments).
+                            
 * Use Zone to Zone disaster recovery for virtual machines.
   > (in preview as of 11/2020) Replicate, failover and failback your business-critical virtual machines within the same region with zones. Ideal for those that have complicated networking infrastructure and want to avoid the cost and complexity of recreating it in a secondary region.
+                            
+* Perform a review of SKUs that could benefit from Reserved Instances for 1 or 3 years or more.
+  > Purchasing reserved instances is a way to reduce Azure costs for workloads with stable usage. You have to manage utilization: if it’s too low then you are paying for resources that are not being used. One advice is to keep RI instances simple and not trying to have too much management overhead that has to be factored in as well as part of the cost.
                             
 # Data
         
@@ -99,12 +99,11 @@ This list contains design considerations and recommended configuration options, 
                             
 ## Azure Database For PostgreSQL
 ### Design Considerations
-* Consider using Flexible Server SKU for non-production workloads.
-  > Flexible servers provide better cost optimization controls with ability to stop/start your server and burstable compute tier that is ideal for workloads that do not need full compute capacity continuously.
-                            
-* The cloud native design of the Single Server service allows it to support 99.99% of availability eliminating the cost of passive hot standby.
 * Hyperscale (Citus) provides dynamic scalability without the cost of manual sharding with low application re-architecture required.
   > Distributing table rows across multiple PostgreSQL servers is a key technique for scalable queries in Hyperscale (Citus). Together, multiple nodes can hold more data than a traditional database, and in many cases can use worker CPUs in parallel to execute queries potentially decreasing the database costs. Follow this [Shard data on worker nodes tutorial](https://docs.microsoft.com/en-us/azure/postgresql/tutorial-hyperscale-shard) to practice this potential savings architecture pattern.
+                            
+* Consider using Flexible Server SKU for non-production workloads.
+  > Flexible servers provide better cost optimization controls with ability to stop/start your server and burstable compute tier that is ideal for workloads that do not need full compute capacity continuously.
                             
 * Plan your RPO (Recovery Point Objective) according to your operation level requirement.
   > There is no additional charge for backup storage for up to 100% of your total provisioned server storage. Additional consumption of backup storage will be charged in GB/month.
@@ -112,31 +111,32 @@ This list contains design considerations and recommended configuration options, 
 * Take advantage of the scaling capabilities of Azure Database for PostgreSQL to decrease consumption cost whenever possible.
   > This [how to article](https://techcommunity.microsoft.com/t5/azure-database-support-blog/how-to-auto-scale-an-azure-database-for-mysql-postgresql/ba-p/369177) from Microsoft Support covers the automation process using runbooks to scale up and down your database as needed.
                             
+* The cloud native design of the Single Server service allows it to support 99.99% of availability eliminating the cost of passive hot standby.
 ### Configuration Recommendations
-* Consider Reserved Capacity for Azure Database for PostgreSQL Single Server and Hyperscale (Citus).
-  > Compute costs associated with Azure Database For PostgreSQL [Single Server Reservation Discount](https://docs.microsoft.com/en-us/azure/postgresql/concept-reserved-pricing) and [Hyperscale (Citus) Reservation Discount](https://docs.microsoft.com/en-us/azure/postgresql/concepts-hyperscale-reserved-pricing). Once the total compute capacity and performance tier for Azure Database for PostgreSQL in a region is determined, this information can be used to reserve the capacity. The reservation can span 1 or 3 years. You can realize significant cost optimization with this commitment.
-                            
 * Choose the appropriate server size for your workload.
   > Configuration options: [Single Server](https://docs.microsoft.com/en-us/azure/postgresql/concepts-pricing-tiers), [Flexible Server](https://docs.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-compute-storage), [Hyperscale (Citus)](https://docs.microsoft.com/en-us/azure/postgresql/concepts-hyperscale-configuration-options).
                             
+* Consider Reserved Capacity for Azure Database for PostgreSQL Single Server and Hyperscale (Citus).
+  > Compute costs associated with Azure Database For PostgreSQL [Single Server Reservation Discount](https://docs.microsoft.com/en-us/azure/postgresql/concept-reserved-pricing) and [Hyperscale (Citus) Reservation Discount](https://docs.microsoft.com/en-us/azure/postgresql/concepts-hyperscale-reserved-pricing). Once the total compute capacity and performance tier for Azure Database for PostgreSQL in a region is determined, this information can be used to reserve the capacity. The reservation can span 1 or 3 years. You can realize significant cost optimization with this commitment.
+                            
 ## Azure Database For MySQL
 ### Design Considerations
-* Consider using Flexible Server SKU for non-production workloads.
-  > Flexible servers provide better cost optimization controls with ability to stop/start your server and burstable compute tier that is ideal for workloads that do not need full compute capacity continuously.
-                            
-* The cloud native design of the Single Server service allows it to support 99.99% of availability eliminating the cost of passive hot standby.
-* Plan your RPO (Recovery Point Objective) according to your operation level requirement.
-  > There is no additional charge for backup storage for up to 100% of your total provisioned server storage. Additional consumption of backup storage will be charged in GB/month.
-                            
 * Take advantage of the scaling capabilities of Azure Database for MySQL to decrease consumption cost whenever possible.
   > This [how to article](https://techcommunity.microsoft.com/t5/azure-database-support-blog/how-to-auto-scale-an-azure-database-for-mysql-postgresql/ba-p/369177) from Microsoft Support covers the automation process using runbooks to scale up and down your database as needed.
                             
-### Configuration Recommendations
-* Consider Reserved Capacity for Azure Database for MySQL Single Server.
-  > Compute costs associated with Azure Database For MySQL [Single Server Reservation Discount](https://docs.microsoft.com/en-us/azure/mysql/concept-reserved-pricing). Once the total compute capacity and performance tier for Azure Database for MySQL in a region is determined, this information can be used to reserve the capacity. The reservation can span 1 or 3 years. You can realize significant cost optimization with this commitment.
+* Plan your RPO (Recovery Point Objective) according to your operation level requirement.
+  > There is no additional charge for backup storage for up to 100% of your total provisioned server storage. Additional consumption of backup storage will be charged in GB/month.
                             
+* The cloud native design of the Single Server service allows it to support 99.99% of availability eliminating the cost of passive hot standby.
+* Consider using Flexible Server SKU for non-production workloads.
+  > Flexible servers provide better cost optimization controls with ability to stop/start your server and burstable compute tier that is ideal for workloads that do not need full compute capacity continuously.
+                            
+### Configuration Recommendations
 * Choose the appropriate server size for your workload.
   > Configuration options: [Single Server](https://docs.microsoft.com/en-us/azure/mysql/concepts-pricing-tiers), [Flexible Server](https://docs.microsoft.com/en-us/azure/mysql/flexible-server/concepts-compute-storage).
+                            
+* Consider Reserved Capacity for Azure Database for MySQL Single Server.
+  > Compute costs associated with Azure Database For MySQL [Single Server Reservation Discount](https://docs.microsoft.com/en-us/azure/mysql/concept-reserved-pricing). Once the total compute capacity and performance tier for Azure Database for MySQL in a region is determined, this information can be used to reserve the capacity. The reservation can span 1 or 3 years. You can realize significant cost optimization with this commitment.
                             
 # Storage
         
@@ -167,17 +167,25 @@ This list contains design considerations and recommended configuration options, 
   > Using the selective disks backup and restore functionality, you can back up a subset of the data disks in a VM. This provides an efficient and cost-effective solution for your backup and restore needs.
                             
 ### Configuration Recommendations
-* Consider using Premium disks (P30 &amp; above).
-  > Premium Disks (P30 & above) can be reserved (1 or 3 years) at discounted price.
+* Configure data and log files on different disks for database workloads.
+  > You can optimize IaaS DB workload performance by configuring system, data and log files to be on different disk SKUs (leveraging Premium Disks for data and Ultra Disks for logs satisfies most production scenarios). Further, Ultra Disk cost/performance can be optimized by taking advantage of the ability to configure capacity, IOPS and throughput independently; and ability to dynamically configure these attributes. Example workloads are SQL on IaaS, Cassandra DB, Maria DB, MySql and Mongo DB on IaaS.
                             
 * Utilize bursting for P20 and below disks for workloads such as batch jobs, workloads which handle traffic spikes, and for improving OS boot time.
   > Azure Disks offer variety of SKUs and sizes to satisfy different workload requirements. Some of the more recent features could help further optimize cost-performance of existing disk use cases. Firstly, you can leverage disk bursting for Premium (disks P20 and below). Example scenarios that could benefit from this feature are improving OS boot time, handling batch jobs and handling traffic spikes. 
                             
-* Configure data and log files on different disks for database workloads.
-  > You can optimize IaaS DB workload performance by configuring system, data and log files to be on different disk SKUs (leveraging Premium Disks for data and Ultra Disks for logs satisfies most production scenarios). Further, Ultra Disk cost/performance can be optimized by taking advantage of the ability to configure capacity, IOPS and throughput independently; and ability to dynamically configure these attributes. Example workloads are SQL on IaaS, Cassandra DB, Maria DB, MySql and Mongo DB on IaaS.
+* Consider using Premium disks (P30 &amp; above).
+  > Premium Disks (P30 & above) can be reserved (1 or 3 years) at discounted price.
                             
 # Networking
         
+## API Management
+### Configuration Recommendations
+* Configure autoscaling where appropriate.
+  > Consider scaling up or down API Management instance to control costs. API Management can be [configured](https://docs.microsoft.com/azure/api-management/api-management-howto-autoscale) with Autoscale based on a either a metric or a specific count. APIM costs depend upon no. of units which determines throughput in requests per seconds (RPS). An auto-scaled APIM instance switches between scale units appropriate for RPS numbers during a specific time window. Auto-scaling helps in achieving balance between cost optimization and performance.
+                            
+* Consider which features are needed all the time.
+  > Consider switching between Basic, Standard and Premium tiers. If a workload does not need features available in higher tier then consider switching to a lower tier. As an example, a workload may need just 1GB of cache during off-peak period compared to 5GB of cache during peak period. Costs associated with such a workload can be significantly reduced by switching from Premium to Standard tier during off-peak period and back to Premium tier during peak period. This process can be automated as a job using [Set-AzApiManagement](https://docs.microsoft.com/powershell/module/az.apimanagement/set-azapimanagement?view=azps-5.4.0) cmdlet. Refer to [documentation](https://azure.microsoft.com/pricing/details/api-management/) on features available in different APIM tiers.
+                            
 ## Network Virtual Appliances (NVA)
 ### Design Considerations
 * There&#39;s a difference between using a third party app (NVA) an Azure native service (Firewall or Application Gateway).
@@ -203,14 +211,6 @@ This list contains design considerations and recommended configuration options, 
   - **Gateways**: limit throughput, performance, etc.
                             
   - **DDoS Standard**: Depending on the workload and usage patterns, Standard can provide useful protection. Otherwise you can use the Basic (i.e. for small customers).
-                            
-## API Management
-### Configuration Recommendations
-* Consider which features are needed all the time.
-  > Consider switching between Basic, Standard and Premium tiers. If a workload does not need features available in higher tier then consider switching to a lower tier. As an example, a workload may need just 1GB of cache during off-peak period compared to 5GB of cache during peak period. Costs associated with such a workload can be significantly reduced by switching from Premium to Standard tier during off-peak period and back to Premium tier during peak period. This process can be automated as a job using [Set-AzApiManagement](https://docs.microsoft.com/powershell/module/az.apimanagement/set-azapimanagement?view=azps-5.4.0) cmdlet. Refer to [documentation](https://azure.microsoft.com/pricing/details/api-management/) on features available in different APIM tiers.
-                            
-* Configure autoscaling where appropriate.
-  > Consider scaling up or down API Management instance to control costs. API Management can be [configured](https://docs.microsoft.com/azure/api-management/api-management-howto-autoscale) with Autoscale based on a either a metric or a specific count. APIM costs depend upon no. of units which determines throughput in requests per seconds (RPS). An auto-scaled APIM instance switches between scale units appropriate for RPS numbers during a specific time window. Auto-scaling helps in achieving balance between cost optimization and performance.
                             
 ## IP Addresses
 ### Configuration Recommendations

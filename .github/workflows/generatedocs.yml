@@ -43,7 +43,7 @@ jobs:
               }
             }
 
-      - name: Update object GUIDs in source data JSON files
+      - name: Update object GUIDs and sort items in source data JSON files
         shell: pwsh
         run: |
             Get-ChildItem -Path $env:DATADIR -Filter *.data.json | % {
@@ -72,6 +72,9 @@ jobs:
                   }
                 }
               }
+
+              # Sort content by category and subCategory
+              $content = $content | Sort-Object lens,category,subCategory,type
 
               # Write updates Data files
               $content | ConvertTo-Json -depth 16 | set-content $file

@@ -12,90 +12,7 @@
     "title": "Azure EventGrid provides a 99.99% uptime SLA"
   },
   {
-    "id": "b77923da-b339-42f4-9ec2-b95fe7dfe8de",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "Event Grid",
-    "title": "In case of a multi-region Azure solution, deploy an Event Grid instance per region."
-  },
-  {
-    "id": "e622bb97-4b1e-41ac-8713-4fb329fe153e",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "Event Grid",
-    "title": "In high-throughput scenarios, use batched events. This means that the service will deliver a json array with multiple events to the subscribers, instead of an array with one event. The consuming application must be able to process these arrays."
-  },
-  {
-    "id": "77b86a01-d686-4b18-a748-89b4d9dbd6f0",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "Event Grid",
-    "title": "Event batches cannot exceed 1MB in size. This means that if the message payload is large, only one or a few messages will fit in the batch. This means that the consuming service will need to process more event batches. If your event has a large payload, consider storing it elsewhere (e.g. blob storage) and passing a reference in the event. When integrating with third-party services through the CloudEvents schema, it is recommended [not to exceed 64kb events](https://github.com/cloudevents/spec/blob/v1.0/spec.md#size-limits)."
-  },
-  {
-    "id": "3950f87e-4328-4c78-8d39-d4233e936c1e",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "Event Grid",
-    "title": "Batch size selection depends on the payload size and the message volume. This should be a configurable parameter and optimizing this should be done during load-testing. "
-  },
-  {
-    "id": "5ea99c15-eddf-47e2-922c-ffd04678f02a",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "Event Grid",
-    "title": "If EventGrid delivers to an endpoint that holds custom code, ensure that the message is accepted with an HTTP 200-204 response only when it can be successfully processed. "
-  },
-  {
-    "id": "ca08b3a1-abcf-48d8-bc51-a21029c7b04d",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "Event Grid",
-    "title": "Monitor EventGrid for failed event publishing (Publish Failed metric). Additionally, the 'Unmatched' metric will show messages that are published, but not matched to any subscription. Depending on your application architecture, the latter may be intentional."
-  },
-  {
-    "id": "f9e1b2d1-98ff-4f49-8239-22bac3c48d00",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "Event Grid",
-    "title": "Monitor EventGrid for failed event delivery. The 'Delivery Failed' metric will increase every time a message cannot be delivered to an event handler (timeout or a non 200-204 HTTP status code). Additionally, if an event must not be lost, set up a Dead-Letter-Queue (DLQ) storage account. This is where events that cannot be delivered after the maximum retry count will be placed. Optionally, implement a notification system on the DLQ storage account, e.g. by handling a 'new file' event through Event Grid."
-  },
-  {
-    "id": "f9024747-0353-41eb-9dcc-62c966cfe2d8",
+    "id": "f4274df8-c5f8-4807-bd0a-81f6ee34e078",
     "type": "Supporting Source Artifacts",
     "pillars": [
       "reliability",
@@ -104,73 +21,8 @@
     "lens": "service",
     "category": "Messaging",
     "subCategory": "Event Grid",
-    "title": "Determine Input Schema type for all available Event Grid Domains:",
-    "code": "Resources \n| where type == 'microsoft.eventgrid/domains'\n| project name, resourceGroup, location, subscriptionId, properties['inputSchema']\n"
-  },
-  {
-    "id": "50227283-8039-4d8d-96f4-69b836dcc07e",
-    "type": "Supporting Source Artifacts",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "Event Grid",
-    "title": "Identify Public Network Access status for all available Event Grid Domains:",
-    "code": "Resources \n| where type == 'microsoft.eventgrid/domains' \n| project name, resourceGroup, location, subscriptionId, properties['publicNetworkAccess']\n"
-  },
-  {
-    "id": "b916e260-9646-4297-9e2b-3e65334ac329",
-    "type": "Supporting Source Artifacts",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "Event Grid",
-    "title": "Identify Firewall Rules for all public Event Grid Domains:",
-    "code": "Resources \n| where type == 'microsoft.eventgrid/domains' and properties['publicNetworkAccess'] == 'Enabled'\n| project name, resourceGroup, location, subscriptionId, properties['inboundIpRules']\n"
-  },
-  {
-    "id": "4c49bec9-5202-49c1-8f35-4ef64b1bf0fd",
-    "type": "Supporting Source Artifacts",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "Event Grid",
-    "title": "Retrieve Resource ID of existent private endpoints for Event Grid Domains:",
-    "code": "Resources \n| where type == 'microsoft.eventgrid/domains' and notnull(properties['privateEndpointConnections']) \n| mvexpand properties['privateEndpointConnections'] \n| project-rename privateEndpointConnections = properties_privateEndpointConnections \n| project name, resourceGroup, location, subscriptionId, privateEndpointConnections['properties']['privateEndpoint']['id']\n"
-  },
-  {
-    "id": "4493e563-1ccc-475c-8120-c718d5f61991",
-    "type": "Supporting Source Artifacts",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "Event Grid",
-    "title": "Determine Input Schema type for all available Event Grid Topics:",
-    "code": "Resources \n| where type == 'microsoft.eventgrid/topics'\n| project name, resourceGroup, location, subscriptionId, properties['inputSchema']\n"
-  },
-  {
-    "id": "3253024b-bf62-4a04-83ef-f45db642cc62",
-    "type": "Supporting Source Artifacts",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "Event Grid",
-    "title": "Identify Public Network Access status for all available Event Grid Topics:",
-    "code": "Resources \n| where type == 'microsoft.eventgrid/topics' \n| project name, resourceGroup, location, subscriptionId, properties['publicNetworkAccess']\n"
+    "title": "Retrieve Resource ID of existent private endpoints for Event Grid Topics:",
+    "code": "Resources \n| where type == 'microsoft.eventgrid/topics' and notnull(properties['privateEndpointConnections']) \n| mvexpand properties['privateEndpointConnections'] \n| project-rename privateEndpointConnections = properties_privateEndpointConnections \n| project name, resourceGroup, location, subscriptionId, privateEndpointConnections['properties']['privateEndpoint']['id']\n"
   },
   {
     "id": "51d21fa7-6049-45e5-9a00-f172c4ab5141",
@@ -186,7 +38,7 @@
     "code": "Resources \n| where type == 'microsoft.eventgrid/topics' and properties['publicNetworkAccess'] == 'Enabled'\n| project name, resourceGroup, location, subscriptionId, properties['inboundIpRules']\n"
   },
   {
-    "id": "f4274df8-c5f8-4807-bd0a-81f6ee34e078",
+    "id": "3253024b-bf62-4a04-83ef-f45db642cc62",
     "type": "Supporting Source Artifacts",
     "pillars": [
       "reliability",
@@ -195,23 +47,76 @@
     "lens": "service",
     "category": "Messaging",
     "subCategory": "Event Grid",
-    "title": "Retrieve Resource ID of existent private endpoints for Event Grid Topics:",
-    "code": "Resources \n| where type == 'microsoft.eventgrid/topics' and notnull(properties['privateEndpointConnections']) \n| mvexpand properties['privateEndpointConnections'] \n| project-rename privateEndpointConnections = properties_privateEndpointConnections \n| project name, resourceGroup, location, subscriptionId, privateEndpointConnections['properties']['privateEndpoint']['id']\n"
+    "title": "Identify Public Network Access status for all available Event Grid Topics:",
+    "code": "Resources \n| where type == 'microsoft.eventgrid/topics' \n| project name, resourceGroup, location, subscriptionId, properties['publicNetworkAccess']\n"
   },
   {
-    "id": "793eaaff-a77b-49df-bab8-e434e1c857ee",
-    "type": "Design Considerations",
+    "id": "4493e563-1ccc-475c-8120-c718d5f61991",
+    "type": "Supporting Source Artifacts",
     "pillars": [
       "reliability",
       "operationalexcellence"
     ],
     "lens": "service",
     "category": "Messaging",
-    "subCategory": "Event Hub",
-    "title": "Azure Event Hubs has a [published SLA](https://azure.microsoft.com/support/legal/sla/event-hubs) of 99.95% for the Basic and Standard Tiers, and 99.99% for the Dedicated Tier."
+    "subCategory": "Event Grid",
+    "title": "Determine Input Schema type for all available Event Grid Topics:",
+    "code": "Resources \n| where type == 'microsoft.eventgrid/topics'\n| project name, resourceGroup, location, subscriptionId, properties['inputSchema']\n"
   },
   {
-    "id": "04b0c6a0-46a1-4cd7-906d-780fe05059e1",
+    "id": "b916e260-9646-4297-9e2b-3e65334ac329",
+    "type": "Supporting Source Artifacts",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Event Grid",
+    "title": "Identify Firewall Rules for all public Event Grid Domains:",
+    "code": "Resources \n| where type == 'microsoft.eventgrid/domains' and properties['publicNetworkAccess'] == 'Enabled'\n| project name, resourceGroup, location, subscriptionId, properties['inboundIpRules']\n"
+  },
+  {
+    "id": "50227283-8039-4d8d-96f4-69b836dcc07e",
+    "type": "Supporting Source Artifacts",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Event Grid",
+    "title": "Identify Public Network Access status for all available Event Grid Domains:",
+    "code": "Resources \n| where type == 'microsoft.eventgrid/domains' \n| project name, resourceGroup, location, subscriptionId, properties['publicNetworkAccess']\n"
+  },
+  {
+    "id": "f9024747-0353-41eb-9dcc-62c966cfe2d8",
+    "type": "Supporting Source Artifacts",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Event Grid",
+    "title": "Determine Input Schema type for all available Event Grid Domains:",
+    "code": "Resources \n| where type == 'microsoft.eventgrid/domains'\n| project name, resourceGroup, location, subscriptionId, properties['inputSchema']\n"
+  },
+  {
+    "id": "4c49bec9-5202-49c1-8f35-4ef64b1bf0fd",
+    "type": "Supporting Source Artifacts",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Event Grid",
+    "title": "Retrieve Resource ID of existent private endpoints for Event Grid Domains:",
+    "code": "Resources \n| where type == 'microsoft.eventgrid/domains' and notnull(properties['privateEndpointConnections']) \n| mvexpand properties['privateEndpointConnections'] \n| project-rename privateEndpointConnections = properties_privateEndpointConnections \n| project name, resourceGroup, location, subscriptionId, privateEndpointConnections['properties']['privateEndpoint']['id']\n"
+  },
+  {
+    "id": "ca08b3a1-abcf-48d8-bc51-a21029c7b04d",
     "type": "Configuration Recommendations",
     "pillars": [
       "reliability",
@@ -219,11 +124,11 @@
     ],
     "lens": "service",
     "category": "Messaging",
-    "subCategory": "Event Hub",
-    "title": "The number of partitions reflect the degree of downstream parallelism you can achieve. For maximum throughput, use the maximum number of partitions (32) when creating the Event Hub. This will allow you to scale up to 32 concurrent processing entities and will offer the highest send/receive availability."
+    "subCategory": "Event Grid",
+    "title": "Monitor EventGrid for failed event publishing (Publish Failed metric). Additionally, the 'Unmatched' metric will show messages that are published, but not matched to any subscription. Depending on your application architecture, the latter may be intentional."
   },
   {
-    "id": "e92340a8-c6f0-4a00-bbd5-085cf7f1cb8e",
+    "id": "5ea99c15-eddf-47e2-922c-ffd04678f02a",
     "type": "Configuration Recommendations",
     "pillars": [
       "reliability",
@@ -231,11 +136,70 @@
     ],
     "lens": "service",
     "category": "Messaging",
-    "subCategory": "Event Hub",
+    "subCategory": "Event Grid",
+    "title": "If EventGrid delivers to an endpoint that holds custom code, ensure that the message is accepted with an HTTP 200-204 response only when it can be successfully processed. "
+  },
+  {
+    "id": "3950f87e-4328-4c78-8d39-d4233e936c1e",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Event Grid",
+    "title": "Batch size selection depends on the payload size and the message volume. This should be a configurable parameter and optimizing this should be done during load-testing. "
+  },
+  {
+    "id": "77b86a01-d686-4b18-a748-89b4d9dbd6f0",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Event Grid",
+    "title": "Event batches cannot exceed 1MB in size. This means that if the message payload is large, only one or a few messages will fit in the batch. This means that the consuming service will need to process more event batches. If your event has a large payload, consider storing it elsewhere (e.g. blob storage) and passing a reference in the event. When integrating with third-party services through the CloudEvents schema, it is recommended [not to exceed 64kb events](https://github.com/cloudevents/spec/blob/v1.0/spec.md#size-limits)."
+  },
+  {
+    "id": "e622bb97-4b1e-41ac-8713-4fb329fe153e",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Event Grid",
     "title": "In high-throughput scenarios, use batched events. This means that the service will deliver a json array with multiple events to the subscribers, instead of an array with one event. The consuming application must be able to process these arrays."
   },
   {
-    "id": "f8a95547-3aca-4290-a133-ad010eb3af2d",
+    "id": "b77923da-b339-42f4-9ec2-b95fe7dfe8de",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Event Grid",
+    "title": "In case of a multi-region Azure solution, deploy an Event Grid instance per region."
+  },
+  {
+    "id": "f9e1b2d1-98ff-4f49-8239-22bac3c48d00",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Event Grid",
+    "title": "Monitor EventGrid for failed event delivery. The 'Delivery Failed' metric will increase every time a message cannot be delivered to an event handler (timeout or a non 200-204 HTTP status code). Additionally, if an event must not be lost, set up a Dead-Letter-Queue (DLQ) storage account. This is where events that cannot be delivered after the maximum retry count will be placed. Optionally, implement a notification system on the DLQ storage account, e.g. by handling a 'new file' event through Event Grid."
+  },
+  {
+    "id": "bc2e5f2d-3328-45f5-8fab-e3122c1811d4",
     "type": "Configuration Recommendations",
     "pillars": [
       "reliability",
@@ -244,8 +208,80 @@
     "lens": "service",
     "category": "Messaging",
     "subCategory": "Event Hub",
-    "title": "As part of your solution-wide availability and disaster recovery strategy, consider enabling the EventHub geo disaster-recovery option. This will allow the creation of a secondary namespace in a different region. Note that only the active namespace receives messages at any time and that messages and events themselves are not replicated to the secondary region.",
-    "context": "Note: The RTO for the regional failover is 'up to 30 minutes'. Confirm this aligns with the requirements of the customer and fits in the broader availability strategy. If a higher RTO is required, consider implementing a client-side failover pattern too."
+    "title": "When publishing events frequently, use the AMQP protocol when possible. AMQP has higher network costs when initializing the session, however HTTPS requires additional TLS overhead for every request. AMQP has higher performance for frequent publishers."
+  },
+  {
+    "id": "937679ea-c754-48ff-949f-8cbb447e1748",
+    "type": "Supporting Source Artifacts",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Event Hub",
+    "title": "Find Event Hub namespaces with 'Basic' SKU:",
+    "code": "Resources \n| where type == 'microsoft.eventhub/namespaces'\n| where sku.name == 'Basic'\n| project resourceGroup, name, sku.name\n"
+  },
+  {
+    "id": "934e04c8-b1ac-44a2-9050-4d5c832623a5",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Event Hub",
+    "title": "When using the SDK to send events to Event Hubs, ensure the exceptions thrown by the [retry policy](https://docs.microsoft.com/azure/architecture/best-practices/retry-service-specific#event-hubs) (EventHubsException or OperationCancelledException) are properly caught. When using HTTPS, ensure a proper retry pattern is implemented."
+  },
+  {
+    "id": "32573192-b771-4882-91f9-aa4430b4643e",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Event Hub",
+    "title": "Ensure each consuming application uses a separate consumer group and only one active receiver per consumer group is in place. "
+  },
+  {
+    "id": "a01e581f-48f5-4e59-a4af-7146ef92aabf",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Event Hub",
+    "title": "When using the Capture feature, carefully consider the configuration of the time window and file size, especially with low event volumes. Data Lake will charge small for a minimal file size for storage (gen1) or minimal transaction size (gen2). This means that if you set the time window so low that the file has not reached minimum size, you will incur a lot of extra cost."
+  },
+  {
+    "id": "f4b4755b-3782-4c25-aaec-914b9c42942d",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Event Hub",
+    "title": "When a solution has a large number of independent event publishers, consider using Event Publishers for fine-grained access control. Note that is automatically sets the partition key to the publisher name, so this should only be used if the events originate from all publishers evenly. "
+  },
+  {
+    "id": "6b6762f0-5d37-4c04-bd40-a845085ac197",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Event Hub",
+    "title": "Create SendOnly and ListenOnly policies for the event publisher and consumer, respectively."
   },
   {
     "id": "8f35e133-402b-464a-9f9e-3b03772c6d10",
@@ -272,6 +308,55 @@
     "title": "Every consumer can read events from 1 to 32 partitions. To achieve maximum scale on the side of the consuming application, every consumer should read from a single partition. "
   },
   {
+    "id": "f8a95547-3aca-4290-a133-ad010eb3af2d",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Event Hub",
+    "title": "As part of your solution-wide availability and disaster recovery strategy, consider enabling the EventHub geo disaster-recovery option. This will allow the creation of a secondary namespace in a different region. Note that only the active namespace receives messages at any time and that messages and events themselves are not replicated to the secondary region.",
+    "context": "Note: The RTO for the regional failover is 'up to 30 minutes'. Confirm this aligns with the requirements of the customer and fits in the broader availability strategy. If a higher RTO is required, consider implementing a client-side failover pattern too."
+  },
+  {
+    "id": "e92340a8-c6f0-4a00-bbd5-085cf7f1cb8e",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Event Hub",
+    "title": "In high-throughput scenarios, use batched events. This means that the service will deliver a json array with multiple events to the subscribers, instead of an array with one event. The consuming application must be able to process these arrays."
+  },
+  {
+    "id": "04b0c6a0-46a1-4cd7-906d-780fe05059e1",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Event Hub",
+    "title": "The number of partitions reflect the degree of downstream parallelism you can achieve. For maximum throughput, use the maximum number of partitions (32) when creating the Event Hub. This will allow you to scale up to 32 concurrent processing entities and will offer the highest send/receive availability."
+  },
+  {
+    "id": "793eaaff-a77b-49df-bab8-e434e1c857ee",
+    "type": "Design Considerations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Event Hub",
+    "title": "Azure Event Hubs has a [published SLA](https://azure.microsoft.com/support/legal/sla/event-hubs) of 99.95% for the Basic and Standard Tiers, and 99.99% for the Dedicated Tier."
+  },
+  {
     "id": "d37e618c-2921-4623-88b9-2f95bb9fbe70",
     "type": "Configuration Recommendations",
     "pillars": [
@@ -284,7 +369,7 @@
     "title": "Do not publish events to a specific partition. If ordering of events is essential, implement this downstream or use a different messaging service instead."
   },
   {
-    "id": "6b6762f0-5d37-4c04-bd40-a845085ac197",
+    "id": "6a781572-d584-495e-87ae-7d8a2de0c1ce",
     "type": "Configuration Recommendations",
     "pillars": [
       "reliability",
@@ -292,11 +377,11 @@
     ],
     "lens": "service",
     "category": "Messaging",
-    "subCategory": "Event Hub",
-    "title": "Create SendOnly and ListenOnly policies for the event publisher and consumer, respectively."
+    "subCategory": "IoT Hub",
+    "title": "In high-throughput scenarios, use batched events. This means that the service will deliver an array with multiple events to the consumers, instead of an array with one event. The consuming application must be able to process these arrays."
   },
   {
-    "id": "bc2e5f2d-3328-45f5-8fab-e3122c1811d4",
+    "id": "82e992a8-b163-44ea-980e-c6de91cad856",
     "type": "Configuration Recommendations",
     "pillars": [
       "reliability",
@@ -304,11 +389,12 @@
     ],
     "lens": "service",
     "category": "Messaging",
-    "subCategory": "Event Hub",
-    "title": "When publishing events frequently, use the AMQP protocol when possible. AMQP has higher network costs when initializing the session, however HTTPS requires additional TLS overhead for every request. AMQP has higher performance for frequent publishers."
+    "subCategory": "IoT Hub",
+    "title": "As part of your solution-wide availability and disaster recovery strategy, consider using the IoT Hub [cross-region Disaster Recovery option](https://docs.microsoft.com/azure/iot-hub/iot-hub-ha-dr#cross-region-dr). This will move the IoT Hub endpoint to the paired Azure region. Note that only the device registry gets replicated. Events themselves are not replicated to the secondary region.",
+    "context": "Note: The RTO for the customer-initiated failover is 'between 10 minutes to a couple of hours'. For a Microsoft-initiated failover the RTO is '2-26 hours'. Confirm this aligns with the requirements of the customer and fits in the broader availability strategy. If a higher RTO is required, consider implementing a client-side failover pattern, too."
   },
   {
-    "id": "f4b4755b-3782-4c25-aaec-914b9c42942d",
+    "id": "adfd5f83-621b-4f29-8971-c11fe30dcc56",
     "type": "Configuration Recommendations",
     "pillars": [
       "reliability",
@@ -316,11 +402,11 @@
     ],
     "lens": "service",
     "category": "Messaging",
-    "subCategory": "Event Hub",
-    "title": "When a solution has a large number of independent event publishers, consider using Event Publishers for fine-grained access control. Note that is automatically sets the partition key to the publisher name, so this should only be used if the events originate from all publishers evenly. "
+    "subCategory": "IoT Hub",
+    "title": "When sending events frequently, use the AMQP or MQTT protocol when possible. AMQP and MQTT have higher network costs when initializing the session, however HTTPS requires additional TLS overhead for every request. AMQP and MQTT have higher performance for frequent publishers."
   },
   {
-    "id": "a01e581f-48f5-4e59-a4af-7146ef92aabf",
+    "id": "3c3368b8-47ab-4411-9343-04ac1c0cba88",
     "type": "Configuration Recommendations",
     "pillars": [
       "reliability",
@@ -328,11 +414,11 @@
     ],
     "lens": "service",
     "category": "Messaging",
-    "subCategory": "Event Hub",
-    "title": "When using the Capture feature, carefully consider the configuration of the time window and file size, especially with low event volumes. Data Lake will charge small for a minimal file size for storage (gen1) or minimal transaction size (gen2). This means that if you set the time window so low that the file has not reached minimum size, you will incur a lot of extra cost."
+    "subCategory": "IoT Hub",
+    "title": "When using an SDK to send events to IoT Hubs, ensure the exceptions thrown by the [retry policy](https://docs.microsoft.com/azure/architecture/best-practices/retry-service-specific#iot-hub) (EventHubsException or OperationCancelledException) are properly caught. When using HTTPS, ensure a proper retry pattern is implemented."
   },
   {
-    "id": "32573192-b771-4882-91f9-aa4430b4643e",
+    "id": "92404010-2129-4145-85e9-e969bba9663e",
     "type": "Configuration Recommendations",
     "pillars": [
       "reliability",
@@ -340,11 +426,11 @@
     ],
     "lens": "service",
     "category": "Messaging",
-    "subCategory": "Event Hub",
-    "title": "Ensure each consuming application uses a separate consumer group and only one active receiver per consumer group is in place. "
+    "subCategory": "IoT Hub",
+    "title": "When using message routing feature in IoT Hub, latency of the message delivery increases. On average this [should not exceed 500 ms](https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-messages-d2c#latency), but be aware that there is no guarantee for the delivery latency. If you require the minimum possible latency, consider to not use routing and read the events from the built-in endpoint."
   },
   {
-    "id": "934e04c8-b1ac-44a2-9050-4d5c832623a5",
+    "id": "5a899a08-7858-4407-bc23-01e199d8b6d0",
     "type": "Configuration Recommendations",
     "pillars": [
       "reliability",
@@ -352,11 +438,95 @@
     ],
     "lens": "service",
     "category": "Messaging",
-    "subCategory": "Event Hub",
-    "title": "When using the SDK to send events to Event Hubs, ensure the exceptions thrown by the [retry policy](https://docs.microsoft.com/azure/architecture/best-practices/retry-service-specific#event-hubs) (EventHubsException or OperationCancelledException) are properly caught. When using HTTPS, ensure a proper retry pattern is implemented."
+    "subCategory": "IoT Hub",
+    "title": "When reading device telemetry from the built-in Event Hub-compatible endpoint, refer to the recommendation regarding [Event Hub consumers](#Event-Hub) in this document."
   },
   {
-    "id": "937679ea-c754-48ff-949f-8cbb447e1748",
+    "id": "77518ac6-6eef-4f60-809f-51263d391201",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "IoT Hub",
+    "title": "Adding more than one IoT Hub per region does not offer additional resiliency as chances are, that all hubs might still run on the same underlying cluster. For scaling reasons it is usually sufficient to increase the tier and/or allocated IoT Hub units."
+  },
+  {
+    "id": "f988e3a7-5740-4c63-8ae9-9b65d1e0bf50",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "IoT Hub",
+    "title": "If the RTOs offered by either customer- or Microsoft-initiated failover (see above) are not sufficient, it is recommended to provision a second IoT Hub in another region and have routing logic on the device. This can be further enhanced with a 'Concierge Service'. See [here](https://docs.microsoft.com/azure/iot-hub/iot-hub-ha-dr#achieve-cross-region-ha) for more details."
+  },
+  {
+    "id": "0cde4439-1202-4634-b168-460b289b2159",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "IoT Hub",
+    "title": "To avoid telemetry interruption due to throttling / fully used quota, consider adding a [custom auto-scaling solution](https://docs.microsoft.com/azure/iot-hub/iot-hub-scaling#auto-scale)."
+  },
+  {
+    "id": "92d36136-7f37-4402-9048-5ee28e47f5f8",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "IoT Hub",
+    "title": "The number of Device-to-cloud partitions for the Event Hub-compatible endpoint reflect the degree of downstream parallelism you can achieve. For maximum throughput, use the maximum number of partitions (32) when creating the IoT Hub - if you are planning to use the built-in endpoint. This will allow you to scale up to 32 concurrent processing entities and will offer the highest send/receive availability. This number cannot be changed after creation."
+  },
+  {
+    "id": "dea8a896-56b0-42d3-adf0-4d190ff342cc",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "IoT Hub",
+    "title": "If you are using [X.509 certificates](https://docs.microsoft.com/azure/iot-hub/iot-hub-security-x509-get-started#get-x509-ca-certificates) for the device connection, it is recommended to use only certificates validated by a root CA in production environment. Make sure you have processes in place to update the certificate before they expire."
+  },
+  {
+    "id": "ada8e813-7cac-405c-b955-99a8db0403df",
+    "type": "Design Considerations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "IoT Hub",
+    "title": "Azure IoT Hub has a [published SLA](https://azure.microsoft.com/support/legal/sla/iot-hub) of 99.9% for the Basic and Standard tiers, there is no SLA for the Free tier."
+  },
+  {
+    "id": "63f45ba4-5a5b-4f6a-89af-da71bea8847f",
+    "type": "Design Considerations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "IoT Hub Device Provisioning Service",
+    "title": "Azure IoT Hub Device Provisioning Service has a [published SLA](https://azure.microsoft.com/support/legal/sla/iot-hub) of 99.9%."
+  },
+  {
+    "id": "d5be25d4-db78-4ff0-a6f3-895823a56c99",
     "type": "Supporting Source Artifacts",
     "pillars": [
       "reliability",
@@ -364,9 +534,9 @@
     ],
     "lens": "service",
     "category": "Messaging",
-    "subCategory": "Event Hub",
-    "title": "Find Event Hub namespaces with 'Basic' SKU:",
-    "code": "Resources \n| where type == 'microsoft.eventhub/namespaces'\n| where sku.name == 'Basic'\n| project resourceGroup, name, sku.name\n"
+    "subCategory": "Service Bus",
+    "title": "Query to identify premium Service Bus Instances that are not using private endpoints:",
+    "code": "Resources\n| where\n\ttype == 'microsoft.servicebus/namespaces'\n| where\n\tsku.tier == 'Premium'\n\tand isempty(properties.privateEndpointConnections)\n"
   },
   {
     "id": "1033becc-65dd-4140-9d46-972ed895b6ba",
@@ -391,18 +561,6 @@
     "category": "Messaging",
     "subCategory": "Service Bus",
     "title": "However, when deploying Service Bus with Geo-disaster recovery and in availability zones, the SLO increases dramatically, but does not change the financially backed SLA of 99.9% availability."
-  },
-  {
-    "id": "2c31fa34-ccea-46d6-9d28-866c05072bce",
-    "type": "Design Considerations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "Service Bus",
-    "title": "[Partitioned Queues and Topics](https://docs.microsoft.com/azure/service-bus-messaging/service-bus-partitioning)"
   },
   {
     "id": "ce125a21-9942-4351-927b-4ed658c84536",
@@ -580,20 +738,7 @@
     "code": "Resources\n| where\n\ttype == 'microsoft.servicebus/namespaces'\n| where\n\tsku.tier == 'Premium'\n\tand properties.zoneRedundant == 'false'\n"
   },
   {
-    "id": "d5be25d4-db78-4ff0-a6f3-895823a56c99",
-    "type": "Supporting Source Artifacts",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "Service Bus",
-    "title": "Query to identify premium Service Bus Instances that are not using private endpoints:",
-    "code": "Resources\n| where\n\ttype == 'microsoft.servicebus/namespaces'\n| where\n\tsku.tier == 'Premium'\n\tand isempty(properties.privateEndpointConnections)\n"
-  },
-  {
-    "id": "1df56399-26b0-44af-8f2a-b793987d9ee0",
+    "id": "2c31fa34-ccea-46d6-9d28-866c05072bce",
     "type": "Design Considerations",
     "pillars": [
       "reliability",
@@ -601,66 +746,20 @@
     ],
     "lens": "service",
     "category": "Messaging",
-    "subCategory": "Storage Queues",
-    "title": "Azure Storage Queues follow the SLA statements of the general [Storage Account service](https://azure.microsoft.com/support/legal/sla/storage/v1_5/). Currently (v1.5) this specifies a 99.9% guarantee for LRS, ZRS and GRS accounts and a 99.99% guarantee for RA-GRS (provided that requests to RA-GRS switch to secondary endpoints if there is no success on the primary endpoint)"
+    "subCategory": "Service Bus",
+    "title": "[Partitioned Queues and Topics](https://docs.microsoft.com/azure/service-bus-messaging/service-bus-partitioning)"
   },
   {
-    "id": "1a61ff52-16ab-47c8-a0f7-7535fa27bbcf",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "Storage Queues",
-    "title": "Since Storage Queues are part of the Azure Storage service, please refer to the general storage guidance, in addition to the configuration recommendations mentioned below."
-  },
-  {
-    "id": "303046cb-c49b-4e20-be6f-fc3e7af63e13",
-    "type": "Configuration Recommendations",
+    "id": "8cef8915-3411-4808-9dd8-79184b863488",
+    "type": "Supporting Source Artifacts",
     "pillars": [
       "reliability"
     ],
     "lens": "service",
     "category": "Messaging",
     "subCategory": "Storage Queues",
-    "title": "Using geo-zone-redundant storage (GZRS) or read-access geo-zone-redundant storage (RA-GZRS) will provide 16 nines or durability and will protect against failover if an entire datacenter becomes unavailable. See [Azure Storage redundancy](https://docs.microsoft.com/azure/storage/common/storage-redundancy) for more information."
-  },
-  {
-    "id": "95ba71e0-28c7-48e4-8967-c1ac9f3e870a",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "Storage Queues",
-    "title": "For an SLA increase from three to four nines, use geo-redundant storage with read access and configure the client application to fail over to secondary read endpoints if the primary endpoints fail to respond. This consideration should be part of the overall reliability strategy of your solution."
-  },
-  {
-    "id": "1eac888e-ecf1-455f-ae3c-26d10a2a0b72",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "Storage Queues",
-    "title": "Refer to the 'Storage' guidance for specifics on data recovery for storage accounts"
-  },
-  {
-    "id": "6a2fb872-3951-4df5-979a-7745754db345",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "Storage Queues",
-    "title": "Ensure that for all clients accessing the storage account, a proper [retry policy](https://docs.microsoft.com/azure/architecture/best-practices/retry-service-specific#azure-storage) is implemented."
+    "title": "Query to identify storage accounts using locally redundant storage (LRS):",
+    "code": "Resources\n| where\n\ttype == 'microsoft.storage/storageaccounts'\n\tand sku.name =~ 'Standard_LRS'\n"
   },
   {
     "id": "c796d81d-92aa-4bd4-9045-611ec089c6bc",
@@ -676,19 +775,65 @@
     "code": "Resources\n| where\n\ttype == 'microsoft.storage/storageaccounts'\n\tand kind == 'Storage'\n"
   },
   {
-    "id": "8cef8915-3411-4808-9dd8-79184b863488",
-    "type": "Supporting Source Artifacts",
+    "id": "6a2fb872-3951-4df5-979a-7745754db345",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Storage Queues",
+    "title": "Ensure that for all clients accessing the storage account, a proper [retry policy](https://docs.microsoft.com/azure/architecture/best-practices/retry-service-specific#azure-storage) is implemented."
+  },
+  {
+    "id": "1eac888e-ecf1-455f-ae3c-26d10a2a0b72",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Storage Queues",
+    "title": "Refer to the 'Storage' guidance for specifics on data recovery for storage accounts"
+  },
+  {
+    "id": "95ba71e0-28c7-48e4-8967-c1ac9f3e870a",
+    "type": "Configuration Recommendations",
     "pillars": [
       "reliability"
     ],
     "lens": "service",
     "category": "Messaging",
     "subCategory": "Storage Queues",
-    "title": "Query to identify storage accounts using locally redundant storage (LRS):",
-    "code": "Resources\n| where\n\ttype == 'microsoft.storage/storageaccounts'\n\tand sku.name =~ 'Standard_LRS'\n"
+    "title": "For an SLA increase from three to four nines, use geo-redundant storage with read access and configure the client application to fail over to secondary read endpoints if the primary endpoints fail to respond. This consideration should be part of the overall reliability strategy of your solution."
   },
   {
-    "id": "ada8e813-7cac-405c-b955-99a8db0403df",
+    "id": "303046cb-c49b-4e20-be6f-fc3e7af63e13",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Storage Queues",
+    "title": "Using geo-zone-redundant storage (GZRS) or read-access geo-zone-redundant storage (RA-GZRS) will provide 16 nines or durability and will protect against failover if an entire datacenter becomes unavailable. See [Azure Storage redundancy](https://docs.microsoft.com/azure/storage/common/storage-redundancy) for more information."
+  },
+  {
+    "id": "1a61ff52-16ab-47c8-a0f7-7535fa27bbcf",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Messaging",
+    "subCategory": "Storage Queues",
+    "title": "Since Storage Queues are part of the Azure Storage service, please refer to the general storage guidance, in addition to the configuration recommendations mentioned below."
+  },
+  {
+    "id": "1df56399-26b0-44af-8f2a-b793987d9ee0",
     "type": "Design Considerations",
     "pillars": [
       "reliability",
@@ -696,152 +841,7 @@
     ],
     "lens": "service",
     "category": "Messaging",
-    "subCategory": "IoT Hub",
-    "title": "Azure IoT Hub has a [published SLA](https://azure.microsoft.com/support/legal/sla/iot-hub) of 99.9% for the Basic and Standard tiers, there is no SLA for the Free tier."
-  },
-  {
-    "id": "92d36136-7f37-4402-9048-5ee28e47f5f8",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "IoT Hub",
-    "title": "The number of Device-to-cloud partitions for the Event Hub-compatible endpoint reflect the degree of downstream parallelism you can achieve. For maximum throughput, use the maximum number of partitions (32) when creating the IoT Hub - if you are planning to use the built-in endpoint. This will allow you to scale up to 32 concurrent processing entities and will offer the highest send/receive availability. This number cannot be changed after creation."
-  },
-  {
-    "id": "6a781572-d584-495e-87ae-7d8a2de0c1ce",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "IoT Hub",
-    "title": "In high-throughput scenarios, use batched events. This means that the service will deliver an array with multiple events to the consumers, instead of an array with one event. The consuming application must be able to process these arrays."
-  },
-  {
-    "id": "82e992a8-b163-44ea-980e-c6de91cad856",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "IoT Hub",
-    "title": "As part of your solution-wide availability and disaster recovery strategy, consider using the IoT Hub [cross-region Disaster Recovery option](https://docs.microsoft.com/azure/iot-hub/iot-hub-ha-dr#cross-region-dr). This will move the IoT Hub endpoint to the paired Azure region. Note that only the device registry gets replicated. Events themselves are not replicated to the secondary region.",
-    "context": "Note: The RTO for the customer-initiated failover is 'between 10 minutes to a couple of hours'. For a Microsoft-initiated failover the RTO is '2-26 hours'. Confirm this aligns with the requirements of the customer and fits in the broader availability strategy. If a higher RTO is required, consider implementing a client-side failover pattern, too."
-  },
-  {
-    "id": "adfd5f83-621b-4f29-8971-c11fe30dcc56",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "IoT Hub",
-    "title": "When sending events frequently, use the AMQP or MQTT protocol when possible. AMQP and MQTT have higher network costs when initializing the session, however HTTPS requires additional TLS overhead for every request. AMQP and MQTT have higher performance for frequent publishers."
-  },
-  {
-    "id": "3c3368b8-47ab-4411-9343-04ac1c0cba88",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "IoT Hub",
-    "title": "When using an SDK to send events to IoT Hubs, ensure the exceptions thrown by the [retry policy](https://docs.microsoft.com/azure/architecture/best-practices/retry-service-specific#iot-hub) (EventHubsException or OperationCancelledException) are properly caught. When using HTTPS, ensure a proper retry pattern is implemented."
-  },
-  {
-    "id": "92404010-2129-4145-85e9-e969bba9663e",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "IoT Hub",
-    "title": "When using message routing feature in IoT Hub, latency of the message delivery increases. On average this [should not exceed 500 ms](https://docs.microsoft.com/azure/iot-hub/iot-hub-devguide-messages-d2c#latency), but be aware that there is no guarantee for the delivery latency. If you require the minimum possible latency, consider to not use routing and read the events from the built-in endpoint."
-  },
-  {
-    "id": "dea8a896-56b0-42d3-adf0-4d190ff342cc",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "IoT Hub",
-    "title": "If you are using [X.509 certificates](https://docs.microsoft.com/azure/iot-hub/iot-hub-security-x509-get-started#get-x509-ca-certificates) for the device connection, it is recommended to use only certificates validated by a root CA in production environment. Make sure you have processes in place to update the certificate before they expire."
-  },
-  {
-    "id": "77518ac6-6eef-4f60-809f-51263d391201",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "IoT Hub",
-    "title": "Adding more than one IoT Hub per region does not offer additional resiliency as chances are, that all hubs might still run on the same underlying cluster. For scaling reasons it is usually sufficient to increase the tier and/or allocated IoT Hub units."
-  },
-  {
-    "id": "f988e3a7-5740-4c63-8ae9-9b65d1e0bf50",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "IoT Hub",
-    "title": "If the RTOs offered by either customer- or Microsoft-initiated failover (see above) are not sufficient, it is recommended to provision a second IoT Hub in another region and have routing logic on the device. This can be further enhanced with a 'Concierge Service'. See [here](https://docs.microsoft.com/azure/iot-hub/iot-hub-ha-dr#achieve-cross-region-ha) for more details."
-  },
-  {
-    "id": "0cde4439-1202-4634-b168-460b289b2159",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "IoT Hub",
-    "title": "To avoid telemetry interruption due to throttling / fully used quota, consider adding a [custom auto-scaling solution](https://docs.microsoft.com/azure/iot-hub/iot-hub-scaling#auto-scale)."
-  },
-  {
-    "id": "5a899a08-7858-4407-bc23-01e199d8b6d0",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "IoT Hub",
-    "title": "When reading device telemetry from the built-in Event Hub-compatible endpoint, refer to the recommendation regarding [Event Hub consumers](#Event-Hub) in this document."
-  },
-  {
-    "id": "63f45ba4-5a5b-4f6a-89af-da71bea8847f",
-    "type": "Design Considerations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Messaging",
-    "subCategory": "IoT Hub Device Provisioning Service",
-    "title": "Azure IoT Hub Device Provisioning Service has a [published SLA](https://azure.microsoft.com/support/legal/sla/iot-hub) of 99.9%."
+    "subCategory": "Storage Queues",
+    "title": "Azure Storage Queues follow the SLA statements of the general [Storage Account service](https://azure.microsoft.com/support/legal/sla/storage/v1_5/). Currently (v1.5) this specifies a 99.9% guarantee for LRS, ZRS and GRS accounts and a 99.99% guarantee for RA-GRS (provided that requests to RA-GRS switch to secondary endpoints if there is no success on the primary endpoint)"
   }
 ]

@@ -351,7 +351,19 @@
     "title": "Networking",
     "subCategories": [
       {
+        "title": "Application Delivery (General)"
+      },
+      {
+        "title": "Azure Application Gateway v2"
+      },
+      {
+        "title": "API Management"
+      },
+      {
         "title": "Azure Firewall"
+      },
+      {
+        "title": "Azure Front Door"
       },
       {
         "title": "Network Virtual Appliances (NVA)"
@@ -369,22 +381,10 @@
         "title": "Azure DNS"
       },
       {
-        "title": "Application Delivery (General)"
-      },
-      {
-        "title": "Azure Application Gateway v2"
-      },
-      {
-        "title": "Azure Front Door"
-      },
-      {
-        "title": "Azure Loadbalancer"
+        "title": "Azure Load Balancer"
       },
       {
         "title": "Traffic Manager"
-      },
-      {
-        "title": "API Management"
       },
       {
         "title": "IP Addresses"

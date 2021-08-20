@@ -74,7 +74,9 @@ jobs:
               }
 
               # Sort content by category and subCategory
-              $content = $content | Sort-Object lens,category,subCategory,type
+              # Sorting content caused some issues with subsequent PRs - temporarily disabled
+              # this could go into a separate data hygiene task as some point - TODO
+              #$content = $content | Sort-Object lens,category,subCategory,type
 
               # Write updates Data files
               $content | ConvertTo-Json -depth 16 | set-content $file

@@ -1010,7 +1010,7 @@ Resources
 ### Design Considerations
 * Overlapping IP address spaces across on-premises and Azure regions will create major contention challenges.
 * While Virtual Network address space can be added after creation, this process will require an outage if the Virtual Network is already connected to another Virtual Network via peering, since the Virtual Network peering will have to be deleted and re-created.
-  > (Note: Modification of address space on peered vnets was announced at Ignite in sept 2020, but no timelines provided. Check the status before discussing with customer.)
+  > Re-sizing of peered virtual networks is in [public preview](https://azure.microsoft.com/blog/how-to-resize-azure-virtual-networks-that-are-peered-now-in-preview/) (08/20/21).
                             
 * Some Azure services do require [dedicated subnets](https://docs.microsoft.com/azure/virtual-network/virtual-network-for-azure-services#services-that-can-be-deployed-into-a-virtual-network), such as Azure Firewall, Azure Bastion or Virtual Network Gateway.
 * Subnets can be delegated to certain services to create instances of that service within the subnet.
@@ -1050,13 +1050,13 @@ Resources
 * Private Link can be used to establish connectivity to PaaS services over ExpressRoute with Private Peering.
 * When multiple virtual networks are connected to the same ExpressRoute circuit, they will become part of the same routing domain and all virtual networks will share the bandwidth.
 * Azure ExpressRoute provides dedicated private connectivity to Microsoft services such as Azure and Office 365 from on-premises locations.
-* ExpressRoute Global Reach is available in many ExpressRoute peering [locations](https://docs.microsoft.com/azure/expressroute/expressroute-global-reach#availability).
+* ExpressRoute Global Reach is available in many [ExpressRoute peering locations](https://docs.microsoft.com/azure/expressroute/expressroute-global-reach#availability).
 * ExpressRoute Direct allows to create multiple ExpressRoute circuits at no additional cost, up to the ExpressRoute Direct port capacity (10G or 100G and allows you to connect directly to Microsoft&#39;s ExpressRoute routers).
   - For the 100 Gbps SKU, the minimum circuit bandwidth is 5 Gbps.
                             
   - For the 10 Gbps SKU, the minimum circuit bandwidth is 1 Gbps.
                             
-* ExpressRoute Global Reach (where available) allows customers to connect on-premises locations together using ExpressRoute circuits to transit traffic over the Microsoft backbone network.
+* [ExpressRoute Global Reach](https://docs.microsoft.com/azure/expressroute/expressroute-global-reach) (where available) allows customers to connect on-premises locations together using ExpressRoute circuits to transit traffic over the Microsoft backbone network.
 ### Configuration Recommendations
 * Proactively monitor ExpressRoute circuits using Network Performance Monitor.
 * Use ExpressRoute as the primary connectivity channel for connecting on-premises network to Microsoft Azure.
@@ -1070,7 +1070,7 @@ Resources
 * When multiple ExpressRoute circuits are used, [optimize routing](https://docs.microsoft.com/azure/expressroute/expressroute-optimize-routing) by using BGP local preference and AS Path prepending.
 * Ensure the right SKU is used for the ExpressRoute/VPN Gateways based on bandwidth and performance requirements.
 * When very low latency is required, or throughput from on-premises to Azure must be greater than 10 Gbps, enable FastPath to bypass the ExpressRoute Gateway from the data path.
-* Use ExpressRoute Global Reach to connect large offices /regional headquarters/datacenter that are connected to Azure via ExpressRoute.
+* Use [ExpressRoute Global Reach](https://docs.microsoft.com/azure/expressroute/expressroute-global-reach) to connect large offices, regional headquarters or data center that are connected to Azure via ExpressRoute.
 * Use VPN Gateways to connect branches or remote locations to Azure.
   - For higher resiliency, deploy Zone-Redundant Gateways (where available).
                             

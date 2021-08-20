@@ -151,18 +151,6 @@
     "title": "Review the [How to administer Azure Cache for Redis](https://docs.microsoft.com/azure/azure-cache-for-redis/cache-administration#reboot) to understand how data loss can occur with cache reboots and how to test the application for resiliency."
   },
   {
-    "id": "5ec40908-d6d2-4875-81fb-b4f46f31db00",
-    "type": "Design Considerations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Data",
-    "subCategory": "Azure Cache for Redis",
-    "title": "99.9% SLA for the cache endpoints and internet gateway will have connectivity"
-  },
-  {
     "id": "e44de7f8-04b4-4dd7-b141-87f6de05c601",
     "type": "Design Considerations",
     "pillars": [
@@ -180,6 +168,18 @@
         "title": "Redis (REmote DIctionary Server) is an in memory cache for key value pairs and has High Availablity (HA) by default (except Basic tier). There are three tiers for Azure Cache for Redis: Basic, Standard and Premium."
       }
     ]
+  },
+  {
+    "id": "5ec40908-d6d2-4875-81fb-b4f46f31db00",
+    "type": "Design Considerations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Data",
+    "subCategory": "Azure Cache for Redis",
+    "title": "99.9% SLA for the cache endpoints and internet gateway will have connectivity"
   },
   {
     "id": "dee8796f-7cd9-4163-befe-a15d20258b36",
@@ -297,32 +297,9 @@
     "lens": "service",
     "category": "Data",
     "subCategory": "Azure Database For PostgreSQL",
-    "title": "The cloud native design of the Single Server service allows it to support 99.99% of availability eliminating the cost of passive hot standby.",
-    "id": "2a51fd33-36c3-4635-a271-cee9f5b43a76"
-  },
-  {
-    "type": "Design Considerations",
-    "pillars": [
-      "costoptimization"
-    ],
-    "lens": "service",
-    "category": "Data",
-    "subCategory": "Azure Database For PostgreSQL",
-    "title": "Take advantage of the scaling capabilities of Azure Database for PostgreSQL to decrease consumption cost whenever possible.",
-    "context": "This [how to article](https://techcommunity.microsoft.com/t5/azure-database-support-blog/how-to-auto-scale-an-azure-database-for-mysql-postgresql/ba-p/369177) from Microsoft Support covers the automation process using runbooks to scale up and down your database as needed.",
-    "id": "8984f04d-8059-4b05-b812-1a9e03f0adc4"
-  },
-  {
-    "type": "Design Considerations",
-    "pillars": [
-      "costoptimization"
-    ],
-    "lens": "service",
-    "category": "Data",
-    "subCategory": "Azure Database For PostgreSQL",
-    "title": "Plan your RPO (Recovery Point Objective) according to your operation level requirement.",
-    "context": "There is no additional charge for backup storage for up to 100% of your total provisioned server storage. Additional consumption of backup storage will be charged in GB/month.",
-    "id": "1e0f45d3-1fc1-4129-a3b2-6a6880442f9d"
+    "title": "Hyperscale (Citus) provides dynamic scalability without the cost of manual sharding with low application re-architecture required.",
+    "context": "Distributing table rows across multiple PostgreSQL servers is a key technique for scalable queries in Hyperscale (Citus). Together, multiple nodes can hold more data than a traditional database, and in many cases can use worker CPUs in parallel to execute queries potentially decreasing the database costs. Follow this [Shard data on worker nodes tutorial](https://docs.microsoft.com/en-us/azure/postgresql/tutorial-hyperscale-shard) to practice this potential savings architecture pattern.",
+    "id": "70fb08da-ab6e-46c0-8ded-7da1d55db4bc"
   },
   {
     "type": "Design Considerations",
@@ -344,9 +321,32 @@
     "lens": "service",
     "category": "Data",
     "subCategory": "Azure Database For PostgreSQL",
-    "title": "Hyperscale (Citus) provides dynamic scalability without the cost of manual sharding with low application re-architecture required.",
-    "context": "Distributing table rows across multiple PostgreSQL servers is a key technique for scalable queries in Hyperscale (Citus). Together, multiple nodes can hold more data than a traditional database, and in many cases can use worker CPUs in parallel to execute queries potentially decreasing the database costs. Follow this [Shard data on worker nodes tutorial](https://docs.microsoft.com/en-us/azure/postgresql/tutorial-hyperscale-shard) to practice this potential savings architecture pattern.",
-    "id": "70fb08da-ab6e-46c0-8ded-7da1d55db4bc"
+    "title": "Plan your RPO (Recovery Point Objective) according to your operation level requirement.",
+    "context": "There is no additional charge for backup storage for up to 100% of your total provisioned server storage. Additional consumption of backup storage will be charged in GB/month.",
+    "id": "1e0f45d3-1fc1-4129-a3b2-6a6880442f9d"
+  },
+  {
+    "type": "Design Considerations",
+    "pillars": [
+      "costoptimization"
+    ],
+    "lens": "service",
+    "category": "Data",
+    "subCategory": "Azure Database For PostgreSQL",
+    "title": "Take advantage of the scaling capabilities of Azure Database for PostgreSQL to decrease consumption cost whenever possible.",
+    "context": "This [how to article](https://techcommunity.microsoft.com/t5/azure-database-support-blog/how-to-auto-scale-an-azure-database-for-mysql-postgresql/ba-p/369177) from Microsoft Support covers the automation process using runbooks to scale up and down your database as needed.",
+    "id": "8984f04d-8059-4b05-b812-1a9e03f0adc4"
+  },
+  {
+    "type": "Design Considerations",
+    "pillars": [
+      "costoptimization"
+    ],
+    "lens": "service",
+    "category": "Data",
+    "subCategory": "Azure Database For PostgreSQL",
+    "title": "The cloud native design of the Single Server service allows it to support 99.99% of availability eliminating the cost of passive hot standby.",
+    "id": "2a51fd33-36c3-4635-a271-cee9f5b43a76"
   },
   {
     "id": "0312c6cd-c0f0-4087-8585-c7fdc5f6665b",
@@ -466,90 +466,6 @@
     "title": "Databricks blog: [Best practices to secure an enterprise-scale data platform](https://databricks.com/blog/2020/03/16/security-that-unblocks.html)"
   },
   {
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "costoptimization"
-    ],
-    "lens": "service",
-    "category": "Data",
-    "subCategory": "Azure SQL Database",
-    "title": "Optimize Queries.",
-    "context": "Optimize the queries/tables/databases using [Query Performance Insights](https://docs.microsoft.com/azure/azure-sql/database/query-performance-insight-use) and [Performance Recommendations](https://docs.microsoft.com/azure/azure-sql/database/database-advisor-find-recommendations-portal) to help reduce the resource consumption and arrive at appropriate configuration ",
-    "id": "c7517dfd-6d18-4522-aef7-484c196aa767"
-  },
-  {
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "costoptimization"
-    ],
-    "lens": "service",
-    "category": "Data",
-    "subCategory": "Azure SQL Database",
-    "title": "Evaluate DTU Usage.",
-    "context": "Evaluate the DTU usage for all Databases and determine if they have been sized/provisioned correctly. For non-prod Databases, consider using Basic Tier or S0 and configure the DTUs accordingly, as applicable. The DTUs can be scaled on demand e.g. when running a load test, etc.",
-    "id": "282281d5-c7e0-4ec4-8b63-e5e1934eae6d"
-  },
-  {
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "costoptimization"
-    ],
-    "lens": "service",
-    "category": "Data",
-    "subCategory": "Azure SQL Database",
-    "title": "Evaluate Azure SQL Database Serverless.",
-    "context": "Consider using Azure SQL Database Serverless over Provisioned Computing Tier. Serverless is a compute tier for single databases that automatically scales compute based on workload demand and bills for the amount of compute used per second. The serverless compute tier also automatically pauses databases during inactive periods when only storage is billed and automatically resumes databases when activity returns. Azure SQL Database serverless is not suited for all scenarios, but if you have a database that is not always heavily used and if you have periods of complete inactivity, this is a very interesting solution that can you guarantee performances and that can help you on saving a lot of costs.",
-    "id": "95eabacf-4703-499c-9dd7-7c65950c8ca9"
-  },
-  {
-    "id": "18f62fa1-6f18-4788-be7d-b24091261cdf",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "costoptimization"
-    ],
-    "lens": "service",
-    "category": "Data",
-    "subCategory": "Azure SQL Database",
-    "title": "Consider Reserved Capacity for Azure SQL Database.",
-    "context": "Compute costs associated with Azure SQL Database can be reduced by using [Reservation Discount](https://docs.microsoft.com/azure/cost-management-billing/reservations/understand-reservation-charges). Once the total compute capacity and performance tier for Azure SQL databases in a region is determined, this information can be used to reserve the capacity. The reservation can span 1 or 3 years. Significant cost optimization can be realized with this commitment. Refer to documentation on [Save costs for resources with reserved capacity](https://docs.microsoft.com/azure/azure-sql/database/reserved-capacity-overview) for more details."
-  },
-  {
-    "id": "418e8908-fef2-493c-8766-eea3a0b98da3",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Data",
-    "subCategory": "Azure SQL Database",
-    "title": "Backup your keys: If you are not [using encryption keys in Azure key vault to protect your data](https://docs.microsoft.com/azure/sql-database/sql-database-always-encrypted-azure-key-vault), backup your keys!"
-  },
-  {
-    "id": "13c9b276-aa74-4ac5-9e46-c834b2968b29",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Data",
-    "subCategory": "Azure SQL Database",
-    "title": "Implement Retry Logic: Although Azure SQL Database is resilient on the transitive infrastructure failures, these failures might affect your connectivity. When a transient error occurs while working with SQL Database, make sure your code must be able to retry the call. Follow the link for detailed instruction on how to [Implement retry logic](https://docs.microsoft.com/azure/azure-sql/database/troubleshoot-common-connectivity-issues)."
-  },
-  {
-    "id": "8cfb15ee-3f9f-40ad-a0af-37501492aa1a",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Data",
-    "subCategory": "Azure SQL Database",
-    "title": "Monitor your Azure SQL DB in near-real time to detect reliability incidents. Use one of the available solutions to monitor SQL DB to detect potential reliability incidents early and make your databases more reliable. Choosing a near real-time monitoring solution is key to quickly react to incidents. See [Azure SQL Analytics](https://docs.microsoft.com/azure/azure-monitor/insights/azure-sql#analyze-data-and-create-alerts) for more information."
-  },
-  {
     "id": "777f2c22-8d3f-445f-b767-85af098c0f2c",
     "type": "Configuration Recommendations",
     "pillars": [
@@ -576,8 +492,8 @@
     ]
   },
   {
-    "id": "954bbcfb-ec77-418a-b0a7-e13182b372d3",
-    "type": "Design Considerations",
+    "id": "8cfb15ee-3f9f-40ad-a0af-37501492aa1a",
+    "type": "Configuration Recommendations",
     "pillars": [
       "reliability",
       "operationalexcellence"
@@ -585,11 +501,11 @@
     "lens": "service",
     "category": "Data",
     "subCategory": "Azure SQL Database",
-    "title": "Use point-in-time restore to recover from human error. Point-in-time restore returns your database to an earlier point in time to recover data from changes done inadvertently. For more information, read the [PITR documentation](https://docs.microsoft.com/azure/azure-sql/database/recovery-using-backups#point-in-time-restore)."
+    "title": "Monitor your Azure SQL DB in near-real time to detect reliability incidents. Use one of the available solutions to monitor SQL DB to detect potential reliability incidents early and make your databases more reliable. Choosing a near real-time monitoring solution is key to quickly react to incidents. See [Azure SQL Analytics](https://docs.microsoft.com/azure/azure-monitor/insights/azure-sql#analyze-data-and-create-alerts) for more information."
   },
   {
-    "id": "4866a231-88a5-496b-b454-3c24f6b64faf",
-    "type": "Design Considerations",
+    "id": "13c9b276-aa74-4ac5-9e46-c834b2968b29",
+    "type": "Configuration Recommendations",
     "pillars": [
       "reliability",
       "operationalexcellence"
@@ -597,11 +513,11 @@
     "lens": "service",
     "category": "Data",
     "subCategory": "Azure SQL Database",
-    "title": "Azure SQL Database is a fully managed platform as a service (PaaS) database engine that handles most of the database management functions. Azure SQL Database is always running on the latest stable version of the SQL Server database engine and patched OS with 99.99% availability. PaaS capabilities that are built into Azure SQL Database enable you to focus on the domain-specific database administration and optimization activities that are critical for your business. "
+    "title": "Implement Retry Logic: Although Azure SQL Database is resilient on the transitive infrastructure failures, these failures might affect your connectivity. When a transient error occurs while working with SQL Database, make sure your code must be able to retry the call. Follow the link for detailed instruction on how to [Implement retry logic](https://docs.microsoft.com/azure/azure-sql/database/troubleshoot-common-connectivity-issues)."
   },
   {
-    "id": "1d50f67d-290b-4665-acfd-93970dd70a03",
-    "type": "Design Considerations",
+    "id": "418e8908-fef2-493c-8766-eea3a0b98da3",
+    "type": "Configuration Recommendations",
     "pillars": [
       "reliability",
       "operationalexcellence"
@@ -609,55 +525,55 @@
     "lens": "service",
     "category": "Data",
     "subCategory": "Azure SQL Database",
-    "title": "Define an application performance SLA and monitor it with alerts. Detecting quickly when your application performance inadvertently degrades below an acceptable level is important to maintain high resiliency. Use the monitoring solution defined above to set alerts on key query performance metrics to you can take action when the performance breaks the SLA. Go to [Monitor Your Database](https://docs.microsoft.com/azure/azure-sql/database/monitor-tune-overview) for more information."
+    "title": "Backup your keys: If you are not [using encryption keys in Azure key vault to protect your data](https://docs.microsoft.com/azure/sql-database/sql-database-always-encrypted-azure-key-vault), backup your keys!"
   },
   {
-    "id": "4ec22eb1-2dbb-451d-aa22-1a527da4be48",
-    "type": "Design Considerations",
+    "type": "Configuration Recommendations",
     "pillars": [
-      "reliability",
-      "operationalexcellence"
+      "costoptimization"
     ],
     "lens": "service",
     "category": "Data",
     "subCategory": "Azure SQL Database",
-    "title": "Azure SQL Database Business Critical tier configured with geo-replication has a guarantee of Recovery point objective (RPO) of 5 sec for 100% of deployed hours."
+    "title": "Evaluate DTU Usage.",
+    "context": "Evaluate the DTU usage for all Databases and determine if they have been sized/provisioned correctly. For non-prod Databases, consider using Basic Tier or S0 and configure the DTUs accordingly, as applicable. The DTUs can be scaled on demand e.g. when running a load test, etc.",
+    "id": "282281d5-c7e0-4ec4-8b63-e5e1934eae6d"
   },
   {
-    "id": "f6ac0853-e307-4100-a854-5a2c1361f894",
-    "type": "Design Considerations",
+    "type": "Configuration Recommendations",
     "pillars": [
-      "reliability",
-      "operationalexcellence"
+      "costoptimization"
     ],
     "lens": "service",
     "category": "Data",
     "subCategory": "Azure SQL Database",
-    "title": "Use geo-restore to recover from a service outage. You can restore a database on any SQL Database server or an instance database on any managed instance in any Azure region from the most recent geo-replicated backups. Geo-restore uses a geo-replicated backup as its source. You can request geo-restore even if the database or datacenter is inaccessible due to an outage. Geo-restore restores a database from a geo-redundant backup. For more information, see [Recover an Azure SQL database using automated database backups](https://docs.microsoft.com/azure/sql-database/sql-database-recovery-using-backups)"
+    "title": "Evaluate Azure SQL Database Serverless.",
+    "context": "Consider using Azure SQL Database Serverless over Provisioned Computing Tier. Serverless is a compute tier for single databases that automatically scales compute based on workload demand and bills for the amount of compute used per second. The serverless compute tier also automatically pauses databases during inactive periods when only storage is billed and automatically resumes databases when activity returns. Azure SQL Database serverless is not suited for all scenarios, but if you have a database that is not always heavily used and if you have periods of complete inactivity, this is a very interesting solution that can you guarantee performances and that can help you on saving a lot of costs.",
+    "id": "95eabacf-4703-499c-9dd7-7c65950c8ca9"
   },
   {
-    "id": "52d32317-63e6-4fae-b8af-75eddadaccbe",
-    "type": "Design Considerations",
+    "type": "Configuration Recommendations",
     "pillars": [
-      "reliability",
-      "operationalexcellence"
+      "costoptimization"
     ],
     "lens": "service",
     "category": "Data",
     "subCategory": "Azure SQL Database",
-    "title": "Azure SQL Database Business Critical or Premium tiers configured as Zone Redundant Deployments have an availability guarantee of at least 99.995%."
+    "title": "Optimize Queries.",
+    "context": "Optimize the queries/tables/databases using [Query Performance Insights](https://docs.microsoft.com/azure/azure-sql/database/query-performance-insight-use) and [Performance Recommendations](https://docs.microsoft.com/azure/azure-sql/database/database-advisor-find-recommendations-portal) to help reduce the resource consumption and arrive at appropriate configuration ",
+    "id": "c7517dfd-6d18-4522-aef7-484c196aa767"
   },
   {
-    "id": "e203729b-1283-4d3d-a0a0-6d8c97c8b2e5",
-    "type": "Design Considerations",
+    "id": "18f62fa1-6f18-4788-be7d-b24091261cdf",
+    "type": "Configuration Recommendations",
     "pillars": [
-      "reliability",
-      "operationalexcellence"
+      "costoptimization"
     ],
     "lens": "service",
     "category": "Data",
     "subCategory": "Azure SQL Database",
-    "title": "Azure SQL Database Hyperscale tier with one replica has an availability guarantee of at least 99.95% and 99.9% for zero replicas."
+    "title": "Consider Reserved Capacity for Azure SQL Database.",
+    "context": "Compute costs associated with Azure SQL Database can be reduced by using [Reservation Discount](https://docs.microsoft.com/azure/cost-management-billing/reservations/understand-reservation-charges). Once the total compute capacity and performance tier for Azure SQL databases in a region is determined, this information can be used to reserve the capacity. The reservation can span 1 or 3 years. Significant cost optimization can be realized with this commitment. Refer to documentation on [Save costs for resources with reserved capacity](https://docs.microsoft.com/azure/azure-sql/database/reserved-capacity-overview) for more details."
   },
   {
     "id": "7285cd69-f5a7-49e8-bcff-e6b04b073625",
@@ -672,7 +588,7 @@
     "title": "Azure SQL Database Business Critical tier configured with geo-replication has a guarantee of Recovery time objective (RTO) of 30 sec for 100% of deployed hours."
   },
   {
-    "id": "fc57b145-f8f0-4ea1-9e88-97084d226b0a",
+    "id": "cc2dd1e6-b510-4f3c-9be6-1a1ccb829e25",
     "type": "Design Considerations",
     "pillars": [
       "reliability",
@@ -681,7 +597,7 @@
     "lens": "service",
     "category": "Data",
     "subCategory": "Azure SQL Database",
-    "title": "Azure SQL Database is having built-in regional high availability and turnkey geo-replication to any Azure region. It includes intelligence to support self-driving features such as performance tuning, threat monitoring, and vulnerability assessments and provides fully automated patching and updating of the code base."
+    "title": "Use sharding Sharding is a technique of distributing data and processing across many identically structured databases, provides an alternative to traditional scale-up approaches both in terms of cost and elasticity. Consider using sharding to partition the database horizontally. Sharding can provide fault isolation. For more information, see [Scaling out with Azure SQL Database](https://docs.microsoft.com/azure/sql-database/sql-database-elastic-scale-introduction)."
   },
   {
     "id": "d0235040-2470-490e-bab5-5b0c10ea22f3",
@@ -696,7 +612,7 @@
     "title": "Azure SQL Database Business Critical or Premium tiers not configured for Zone Redundant Deployments, General Purpose, Standard, or Basic tiers, or Hyperscale tier with two or more replicas have an availability guarantee of at least 99.99%."
   },
   {
-    "id": "cc2dd1e6-b510-4f3c-9be6-1a1ccb829e25",
+    "id": "fc57b145-f8f0-4ea1-9e88-97084d226b0a",
     "type": "Design Considerations",
     "pillars": [
       "reliability",
@@ -705,7 +621,91 @@
     "lens": "service",
     "category": "Data",
     "subCategory": "Azure SQL Database",
-    "title": "Use sharding Sharding is a technique of distributing data and processing across many identically structured databases, provides an alternative to traditional scale-up approaches both in terms of cost and elasticity. Consider using sharding to partition the database horizontally. Sharding can provide fault isolation. For more information, see [Scaling out with Azure SQL Database](https://docs.microsoft.com/azure/sql-database/sql-database-elastic-scale-introduction)."
+    "title": "Azure SQL Database is having built-in regional high availability and turnkey geo-replication to any Azure region. It includes intelligence to support self-driving features such as performance tuning, threat monitoring, and vulnerability assessments and provides fully automated patching and updating of the code base."
+  },
+  {
+    "id": "e203729b-1283-4d3d-a0a0-6d8c97c8b2e5",
+    "type": "Design Considerations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Data",
+    "subCategory": "Azure SQL Database",
+    "title": "Azure SQL Database Hyperscale tier with one replica has an availability guarantee of at least 99.95% and 99.9% for zero replicas."
+  },
+  {
+    "id": "1d50f67d-290b-4665-acfd-93970dd70a03",
+    "type": "Design Considerations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Data",
+    "subCategory": "Azure SQL Database",
+    "title": "Define an application performance SLA and monitor it with alerts. Detecting quickly when your application performance inadvertently degrades below an acceptable level is important to maintain high resiliency. Use the monitoring solution defined above to set alerts on key query performance metrics to you can take action when the performance breaks the SLA. Go to [Monitor Your Database](https://docs.microsoft.com/azure/azure-sql/database/monitor-tune-overview) for more information."
+  },
+  {
+    "id": "f6ac0853-e307-4100-a854-5a2c1361f894",
+    "type": "Design Considerations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Data",
+    "subCategory": "Azure SQL Database",
+    "title": "Use geo-restore to recover from a service outage. You can restore a database on any SQL Database server or an instance database on any managed instance in any Azure region from the most recent geo-replicated backups. Geo-restore uses a geo-replicated backup as its source. You can request geo-restore even if the database or datacenter is inaccessible due to an outage. Geo-restore restores a database from a geo-redundant backup. For more information, see [Recover an Azure SQL database using automated database backups](https://docs.microsoft.com/azure/sql-database/sql-database-recovery-using-backups)"
+  },
+  {
+    "id": "4ec22eb1-2dbb-451d-aa22-1a527da4be48",
+    "type": "Design Considerations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Data",
+    "subCategory": "Azure SQL Database",
+    "title": "Azure SQL Database Business Critical tier configured with geo-replication has a guarantee of Recovery point objective (RPO) of 5 sec for 100% of deployed hours."
+  },
+  {
+    "id": "4866a231-88a5-496b-b454-3c24f6b64faf",
+    "type": "Design Considerations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Data",
+    "subCategory": "Azure SQL Database",
+    "title": "Azure SQL Database is a fully managed platform as a service (PaaS) database engine that handles most of the database management functions. Azure SQL Database is always running on the latest stable version of the SQL Server database engine and patched OS with 99.99% availability. PaaS capabilities that are built into Azure SQL Database enable you to focus on the domain-specific database administration and optimization activities that are critical for your business. "
+  },
+  {
+    "id": "954bbcfb-ec77-418a-b0a7-e13182b372d3",
+    "type": "Design Considerations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Data",
+    "subCategory": "Azure SQL Database",
+    "title": "Use point-in-time restore to recover from human error. Point-in-time restore returns your database to an earlier point in time to recover data from changes done inadvertently. For more information, read the [PITR documentation](https://docs.microsoft.com/azure/azure-sql/database/recovery-using-backups#point-in-time-restore)."
+  },
+  {
+    "id": "52d32317-63e6-4fae-b8af-75eddadaccbe",
+    "type": "Design Considerations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Data",
+    "subCategory": "Azure SQL Database",
+    "title": "Azure SQL Database Business Critical or Premium tiers configured as Zone Redundant Deployments have an availability guarantee of at least 99.995%."
   },
   {
     "id": "9c4e6e9a-788f-48b3-9845-485159efda5e",
@@ -756,7 +756,7 @@
     "title": "Monitor your SQL MI instance in near-real time to detect reliability incidents. Use one of the available solutions to monitor your SQL MI to detect potential reliability incidents early and make your databases more reliable. Choosing a near real-time monitoring solution is key to quickly react to incidents. For more information, check out the [Azure SQL Managed Instance monitoring options](http://aka.ms/mi-monitoring)."
   },
   {
-    "id": "c14f4c48-1fc5-4fd5-bace-46f4c2cd67a5",
+    "id": "c86e1626-1600-4dc8-ba41-eabec22e2a88",
     "type": "Design Considerations",
     "pillars": [
       "reliability",
@@ -765,19 +765,7 @@
     "lens": "service",
     "category": "Data",
     "subCategory": "Azure SQL Managed Instance",
-    "title": "Consider the time required for certain operations. Make sure you separate time to thoroughly test the amount of time required to scale up and down (change the size) your existing managed instance, and to create a new managed instance. This will ensure that you understand completely how these time consuming operations will affect your RTO and RPO."
-  },
-  {
-    "id": "d45e695c-ead8-47d0-a51e-df0e6589c0ec",
-    "type": "Design Considerations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Data",
-    "subCategory": "Azure SQL Managed Instance",
-    "title": "Use geo-restore to recover from a service outage. Geo-restore restores a database from a geo-redundant backup into a managed instance in a different region. For more information, see [Recover a database using Geo-restore documentation](https://docs.microsoft.com/azure/azure-sql/database/auto-failover-group-overview)."
+    "title": "Define an application performance SLA and monitor it with alerts. Detecting quickly when your application performance inadvertently degrades below an acceptable level is important to maintain high resiliency. Use the monitoring solution defined above to set alerts on key query performance metrics to you can take action when the performance breaks the SLA."
   },
   {
     "id": "7b23ec24-cd56-4c46-9918-449c03bd00a8",
@@ -792,7 +780,7 @@
     "title": "Use point-in-time restore to recover from human error. Point-in-time restore returns your database to an earlier point in time to recover data from changes done inadvertently. For more information, read the [PITR documentation for managed instance](https://docs.microsoft.com/azure/azure-sql/database/recovery-using-backups#point-in-time-restore)"
   },
   {
-    "id": "c86e1626-1600-4dc8-ba41-eabec22e2a88",
+    "id": "d45e695c-ead8-47d0-a51e-df0e6589c0ec",
     "type": "Design Considerations",
     "pillars": [
       "reliability",
@@ -801,10 +789,22 @@
     "lens": "service",
     "category": "Data",
     "subCategory": "Azure SQL Managed Instance",
-    "title": "Define an application performance SLA and monitor it with alerts. Detecting quickly when your application performance inadvertently degrades below an acceptable level is important to maintain high resiliency. Use the monitoring solution defined above to set alerts on key query performance metrics to you can take action when the performance breaks the SLA."
+    "title": "Use geo-restore to recover from a service outage. Geo-restore restores a database from a geo-redundant backup into a managed instance in a different region. For more information, see [Recover a database using Geo-restore documentation](https://docs.microsoft.com/azure/azure-sql/database/auto-failover-group-overview)."
   },
   {
-    "id": "d33da1be-5671-4c8a-93aa-58777a9891dd",
+    "id": "c14f4c48-1fc5-4fd5-bace-46f4c2cd67a5",
+    "type": "Design Considerations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Data",
+    "subCategory": "Azure SQL Managed Instance",
+    "title": "Consider the time required for certain operations. Make sure you separate time to thoroughly test the amount of time required to scale up and down (change the size) your existing managed instance, and to create a new managed instance. This will ensure that you understand completely how these time consuming operations will affect your RTO and RPO."
+  },
+  {
+    "id": "826332e4-2e50-486b-be10-1f6391810a65",
     "type": "Configuration Recommendations",
     "pillars": [
       "reliability",
@@ -813,10 +813,10 @@
     "lens": "service",
     "category": "Data",
     "subCategory": "Cosmos DB",
-    "title": "If client is consuming more than 50,000 RU/s, there could be bottleneck due to machine capping out on CPU or network utilization. If you reach this point, it is recommended to scale out client applications across multiple servers."
+    "title": "If multi-master option is enabled on Cosmos DB, it is important to understand [Conflict Types and Resolution Policies](https://docs.microsoft.com/azure/cosmos-db/conflict-resolution-policies)."
   },
   {
-    "id": "5b028a65-5655-4de3-8b5f-cbfbbf465894",
+    "id": "0f42cd7c-47e3-479f-9bf6-3366da2ac4a9",
     "type": "Configuration Recommendations",
     "pillars": [
       "reliability",
@@ -825,10 +825,10 @@
     "lens": "service",
     "category": "Data",
     "subCategory": "Cosmos DB",
-    "title": "Call [OpenAsync](https://docs.microsoft.com/dotnet/api/microsoft.azure.documents.client.documentclient.openasync?view=azure-dotnet) to avoid startup latency on first request."
+    "title": "Session is default consistency level, and it is the most widely used [consistency level](https://docs.microsoft.com/azure/cosmos-db/consistency-levels). It is the recommended consistency level to start with as it receives data later but in the same order as the writes."
   },
   {
-    "id": "8e341782-16c1-44f0-b5ad-487558657cbb",
+    "id": "0458a102-1125-4142-9508-c23d5773795f",
     "type": "Configuration Recommendations",
     "pillars": [
       "reliability",
@@ -837,10 +837,10 @@
     "lens": "service",
     "category": "Data",
     "subCategory": "Cosmos DB",
-    "title": "In order to avoid network latency, collocate client in same region as Cosmos DB."
+    "title": "Use [Azure Monitor](https://docs.microsoft.com/azure/cosmos-db/monitor-cosmos-db) to see the provisioned autoscale max RU/s (Autoscale Max Throughput) and the RU/s the system is currently scaled to (Provisioned Throughput)."
   },
   {
-    "id": "1ce7b30b-6952-4a10-abb4-69c7e0cbbf72",
+    "id": "7b1470df-d347-43a4-aacb-f5b7d697d2cc",
     "type": "Configuration Recommendations",
     "pillars": [
       "reliability",
@@ -849,10 +849,10 @@
     "lens": "service",
     "category": "Data",
     "subCategory": "Cosmos DB",
-    "title": "Increase the number of threads /tasks."
+    "title": "Understand your traffic pattern in order to pick the right option for [provisioned throughput types](https://docs.microsoft.com/azure/cosmos-db/how-to-choose-offer)."
   },
   {
-    "id": "eeea0218-3edb-4a2d-b18e-708f49b1ea15",
+    "id": "7ff41caa-9b38-41e4-bcb8-33ff7cf36d63",
     "type": "Configuration Recommendations",
     "pillars": [
       "reliability",
@@ -861,7 +861,69 @@
     "lens": "service",
     "category": "Data",
     "subCategory": "Cosmos DB",
-    "title": "To reduce latency and CPU jitter, it is recommended to enable accelerated networking on client virtual machines both [Windows](https://docs.microsoft.com/azure/virtual-network/create-vm-accelerated-networking-powershell) and [Linux](https://docs.microsoft.com/azure/virtual-network/create-vm-accelerated-networking-cli)."
+    "title": "For new applications, if you don’t know your traffic pattern yet, start at the entry point RU/s to avoid over-provisioning in the beginning."
+  },
+  {
+    "id": "75904125-9150-49f8-83ac-2a54115820e3",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Data",
+    "subCategory": "Cosmos DB",
+    "title": "For existing applications:",
+    "children": [
+      {
+        "id": "21bd9fab-12b5-452a-98a8-5e9d004c2db6",
+        "title": "Use Azure Monitor metrics to determine if your traffic pattern is suitable for autoscale."
+      },
+      {
+        "id": "42b41640-7097-4496-8dea-a2429a6d58cb",
+        "title": "Find the normalized request unit consumption metric of your database or container. Normalized utilization is a measure of how much you are currently using your standard (manual) provisioned throughput."
+      },
+      {
+        "id": "ca5e3b61-98b6-479c-be63-112295f08903",
+        "title": "The closer the number is to 100%, the more you are fully using your provisioned RU/s."
+      }
+    ]
+  },
+  {
+    "id": "4b4996aa-e263-40fc-8374-8efc0bd8b8c5",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Data",
+    "subCategory": "Cosmos DB",
+    "title": "Of all hours in a month, if you set provisioned RU/s T and use the full amount for 66% of the hours or more, it's estimated you'll save with standard (manual) provisioned RU/s. If you set autoscale max RU/s Tmax and use the full amount Tmax for 66% of the hours or less, it's estimated you'll save with autoscale."
+  },
+  {
+    "id": "a013be2b-301a-4e3c-971f-0e29313c82d8",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Data",
+    "subCategory": "Cosmos DB",
+    "title": "It is strongly recommended that you configure the Azure Cosmos accounts used for production workloads to enable [automatic failover](https://docs.microsoft.com/azure/cosmos-db/high-availability#multi-region-accounts-with-a-single-write-region-write-region-outage). "
+  },
+  {
+    "id": "739123c3-3ed6-4db1-b153-c9c6c2fe1aeb",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Data",
+    "subCategory": "Cosmos DB",
+    "title": "Implement [retry logic](https://docs.microsoft.com/azure/architecture/best-practices/retry-service-specific#cosmos-db) in your client."
   },
   {
     "id": "13308701-d668-4644-9a44-01b4a91ed52c",
@@ -876,7 +938,7 @@
     "title": "For query-intensive workloads, use Windows 64-bit instead of Linux or Windows 32-bit host processing."
   },
   {
-    "id": "739123c3-3ed6-4db1-b153-c9c6c2fe1aeb",
+    "id": "eeea0218-3edb-4a2d-b18e-708f49b1ea15",
     "type": "Configuration Recommendations",
     "pillars": [
       "reliability",
@@ -885,7 +947,55 @@
     "lens": "service",
     "category": "Data",
     "subCategory": "Cosmos DB",
-    "title": "Implement [retry logic](https://docs.microsoft.com/azure/architecture/best-practices/retry-service-specific#cosmos-db) in your client."
+    "title": "To reduce latency and CPU jitter, it is recommended to enable accelerated networking on client virtual machines both [Windows](https://docs.microsoft.com/azure/virtual-network/create-vm-accelerated-networking-powershell) and [Linux](https://docs.microsoft.com/azure/virtual-network/create-vm-accelerated-networking-cli)."
+  },
+  {
+    "id": "1ce7b30b-6952-4a10-abb4-69c7e0cbbf72",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Data",
+    "subCategory": "Cosmos DB",
+    "title": "Increase the number of threads /tasks."
+  },
+  {
+    "id": "8e341782-16c1-44f0-b5ad-487558657cbb",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Data",
+    "subCategory": "Cosmos DB",
+    "title": "In order to avoid network latency, collocate client in same region as Cosmos DB."
+  },
+  {
+    "id": "5b028a65-5655-4de3-8b5f-cbfbbf465894",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Data",
+    "subCategory": "Cosmos DB",
+    "title": "Call [OpenAsync](https://docs.microsoft.com/dotnet/api/microsoft.azure.documents.client.documentclient.openasync?view=azure-dotnet) to avoid startup latency on first request."
+  },
+  {
+    "id": "d33da1be-5671-4c8a-93aa-58777a9891dd",
+    "type": "Configuration Recommendations",
+    "pillars": [
+      "reliability",
+      "operationalexcellence"
+    ],
+    "lens": "service",
+    "category": "Data",
+    "subCategory": "Cosmos DB",
+    "title": "If client is consuming more than 50,000 RU/s, there could be bottleneck due to machine capping out on CPU or network utilization. If you reach this point, it is recommended to scale out client applications across multiple servers."
   },
   {
     "id": "24e65b97-ca3e-4c30-91bb-a639c0a73294",
@@ -922,8 +1032,8 @@
     ]
   },
   {
-    "id": "a013be2b-301a-4e3c-971f-0e29313c82d8",
-    "type": "Configuration Recommendations",
+    "id": "d513ec08-d08e-4121-b81a-a48bb459227d",
+    "type": "Design Considerations",
     "pillars": [
       "reliability",
       "operationalexcellence"
@@ -931,11 +1041,11 @@
     "lens": "service",
     "category": "Data",
     "subCategory": "Cosmos DB",
-    "title": "It is strongly recommended that you configure the Azure Cosmos accounts used for production workloads to enable [automatic failover](https://docs.microsoft.com/azure/cosmos-db/high-availability#multi-region-accounts-with-a-single-write-region-write-region-outage). "
+    "title": "99.999% SLA for read availability for Database Accounts spanning two or more Azure region."
   },
   {
-    "id": "4b4996aa-e263-40fc-8374-8efc0bd8b8c5",
-    "type": "Configuration Recommendations",
+    "id": "90400b8f-9f7d-4ed8-9436-0ab115fc7f53",
+    "type": "Design Considerations",
     "pillars": [
       "reliability",
       "operationalexcellence"
@@ -943,93 +1053,7 @@
     "lens": "service",
     "category": "Data",
     "subCategory": "Cosmos DB",
-    "title": "Of all hours in a month, if you set provisioned RU/s T and use the full amount for 66% of the hours or more, it's estimated you'll save with standard (manual) provisioned RU/s. If you set autoscale max RU/s Tmax and use the full amount Tmax for 66% of the hours or less, it's estimated you'll save with autoscale."
-  },
-  {
-    "id": "75904125-9150-49f8-83ac-2a54115820e3",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Data",
-    "subCategory": "Cosmos DB",
-    "title": "For existing applications:",
-    "children": [
-      {
-        "id": "21bd9fab-12b5-452a-98a8-5e9d004c2db6",
-        "title": "Use Azure Monitor metrics to determine if your traffic pattern is suitable for autoscale."
-      },
-      {
-        "id": "42b41640-7097-4496-8dea-a2429a6d58cb",
-        "title": "Find the normalized request unit consumption metric of your database or container. Normalized utilization is a measure of how much you are currently using your standard (manual) provisioned throughput."
-      },
-      {
-        "id": "ca5e3b61-98b6-479c-be63-112295f08903",
-        "title": "The closer the number is to 100%, the more you are fully using your provisioned RU/s."
-      }
-    ]
-  },
-  {
-    "id": "7ff41caa-9b38-41e4-bcb8-33ff7cf36d63",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Data",
-    "subCategory": "Cosmos DB",
-    "title": "For new applications, if you don’t know your traffic pattern yet, start at the entry point RU/s to avoid over-provisioning in the beginning."
-  },
-  {
-    "id": "7b1470df-d347-43a4-aacb-f5b7d697d2cc",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Data",
-    "subCategory": "Cosmos DB",
-    "title": "Understand your traffic pattern in order to pick the right option for [provisioned throughput types](https://docs.microsoft.com/azure/cosmos-db/how-to-choose-offer)."
-  },
-  {
-    "id": "0458a102-1125-4142-9508-c23d5773795f",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Data",
-    "subCategory": "Cosmos DB",
-    "title": "Use [Azure Monitor](https://docs.microsoft.com/azure/cosmos-db/monitor-cosmos-db) to see the provisioned autoscale max RU/s (Autoscale Max Throughput) and the RU/s the system is currently scaled to (Provisioned Throughput)."
-  },
-  {
-    "id": "0f42cd7c-47e3-479f-9bf6-3366da2ac4a9",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Data",
-    "subCategory": "Cosmos DB",
-    "title": "Session is default consistency level, and it is the most widely used [consistency level](https://docs.microsoft.com/azure/cosmos-db/consistency-levels). It is the recommended consistency level to start with as it receives data later but in the same order as the writes."
-  },
-  {
-    "id": "826332e4-2e50-486b-be10-1f6391810a65",
-    "type": "Configuration Recommendations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Data",
-    "subCategory": "Cosmos DB",
-    "title": "If multi-master option is enabled on Cosmos DB, it is important to understand [Conflict Types and Resolution Policies](https://docs.microsoft.com/azure/cosmos-db/conflict-resolution-policies)."
+    "title": "99.99% SLAs for throughput, consistency, availability and latency for Database Accounts scoped to a single Azure region configured with any of the five Consistency Levels or Database Accounts spanning to multiple Azure regions, configured with any of the four relaxed Consistency Levels."
   },
   {
     "id": "fb949e69-49b6-45d3-b783-4ada4cf7d84a",
@@ -1045,8 +1069,8 @@
     "context": "[Cosmos DB Service Level Agreements](https://azure.microsoft.com/support/legal/sla/cosmos-db/v1_3/)"
   },
   {
-    "id": "90400b8f-9f7d-4ed8-9436-0ab115fc7f53",
-    "type": "Design Considerations",
+    "id": "92e8eab9-3e1a-4965-abc0-0f4dc384727d",
+    "type": "Supporting Source Artifacts",
     "pillars": [
       "reliability",
       "operationalexcellence"
@@ -1054,19 +1078,8 @@
     "lens": "service",
     "category": "Data",
     "subCategory": "Cosmos DB",
-    "title": "99.99% SLAs for throughput, consistency, availability and latency for Database Accounts scoped to a single Azure region configured with any of the five Consistency Levels or Database Accounts spanning to multiple Azure regions, configured with any of the four relaxed Consistency Levels."
-  },
-  {
-    "id": "d513ec08-d08e-4121-b81a-a48bb459227d",
-    "type": "Design Considerations",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Data",
-    "subCategory": "Cosmos DB",
-    "title": "99.999% SLA for read availability for Database Accounts spanning two or more Azure region."
+    "title": "To check for cosmosdb instances where automatic failover is not enabled:",
+    "code": "Resources\n|where  type =~ 'Microsoft.DocumentDb/databaseAccounts'\n|where properties.enableAutomaticFailover!=True\n"
   },
   {
     "id": "4a6ca64a-62b3-4e0a-9ef8-e7186e5fb4f3",
@@ -1128,19 +1141,6 @@
     "category": "Data",
     "subCategory": "Cosmos DB",
     "title": "[Performance Tips for Cosmos DB](https://docs.microsoft.com/azure/cosmos-db/performance-tips)"
-  },
-  {
-    "id": "92e8eab9-3e1a-4965-abc0-0f4dc384727d",
-    "type": "Supporting Source Artifacts",
-    "pillars": [
-      "reliability",
-      "operationalexcellence"
-    ],
-    "lens": "service",
-    "category": "Data",
-    "subCategory": "Cosmos DB",
-    "title": "To check for cosmosdb instances where automatic failover is not enabled:",
-    "code": "Resources\n|where  type =~ 'Microsoft.DocumentDb/databaseAccounts'\n|where properties.enableAutomaticFailover!=True\n"
   },
   {
     "id": "ed0471e6-456a-4409-a14c-fccd3bc6d85a",

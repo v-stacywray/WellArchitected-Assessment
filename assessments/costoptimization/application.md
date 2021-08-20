@@ -46,10 +46,10 @@ The following Design Principles provide context for questions, why a certain asp
 These critical design principles are used as lenses to assess the Cost Optimization of an application deployed on Azure, providing a framework for the application assessment questions that follow.
 
 
-## Dynamically allocate and de-allocate resources to match performance needs
+## Choose the correct resources for your business goals
 
 
-  Identify idle or underutilised resources (e.g. through Azure Advisor or other tools) and reconfigure, consolidate or shut down.
+  Choose the right resources that are aligned with business goals and can handle the performance needs of the workload. When onboarding new workloads explore the possibility of modernization and cloud native offerings where possible. Using the PaaS or SaaS layer as opposed to IaaS is typically more cost effective.
 
 
 
@@ -60,10 +60,10 @@ These critical design principles are used as lenses to assess the Cost Optimizat
 
 
 
-## Choose the correct resources for your business goals
+## Dynamically allocate and de-allocate resources to match performance needs
 
 
-  Choose the right resources that are aligned with business goals and can handle the performance needs of the workload. When onboarding new workloads explore the possibility of modernization and cloud native offerings where possible. Using the PaaS or SaaS layer as opposed to IaaS is typically more cost effective.
+  Identify idle or underutilised resources (e.g. through Azure Advisor or other tools) and reconfigure, consolidate or shut down.
 
 
 
@@ -103,43 +103,6 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
     
 ### Design
             
-* Has a Business Continuity Disaster Recovery (BCDR) strategy been defined for the application and/or its key scenarios?
-
-  _A disaster recovery strategy should capture how the application responds to a disaster situation such as a regional outage or the loss of a critical platform service, using either a re-deployment, warm-spare active-passive, or hot-spare active-active approach. To drive cost down consider splitting application components and data into groups. For example: 1) must protect, 2) nice to protect, 3) ephemeral/can be rebuilt/lost, instead of protecting all data with the same policy._
-    - If you have a disaster recovery plan in another region, have you ensured you have the needed capacity quotas allocated?
-
-      _Quotas and limits typically apply at the region level and, therefore, the needed capacity should also be planned for the secondary region._
-* Has the application been designed to scale-out?
-
-  _Azure provides elastic scalability, however, applications must leverage a scale-unit approach to navigate service and subscription limits to ensure that individual components and the application as a whole can scale horizontally. Don't forget about scale in as well, as this is important to drive cost down. For example, scale in and out for App Service is done via rules. Often customers write scale out rule and never write scale in rule, this leaves the App Service more expensive._
-  > Design your solution with scalability in mind, leverage PaaS capabilities to [scale out](https://docs.microsoft.com/azure/architecture/guide/design-principles/scale-out) and in by adding additional instances when needed
-  
-    Additional resources:
-    - [Design to scale out](https://docs.microsoft.com/azure/architecture/guide/design-principles/scale-out)
-* Is an availability strategy defined? i.e. multi-geo, full/partial
-
-  _An availability strategy should capture how the application remains available when in a failure state and should apply across all application components and the application deployment stamp as a whole such as via multi-geo scale-unit deployment approach. There are cost implications as well: More resources need to be provisioned in advance to provide high availability. Active-active setup, while more expensive than single deployment, can balance cost by lowering load on one stamp and reducing the total amount of resources needed._
-* Was the application built natively for the cloud or was an existing on-premises system migrated?
-
-  _Understanding if the application is cloud-native or not provides a very useful high-level indication about potential technical debt for operability and cost efficiency._
-  > While cloud-native workloads are preferred, migrated or modernized applications are reality and they might not utilize the available cloud functionality like auto-scaling, platform notifications etc. Make sure to understand the limitations and implement workarounds if available.
-* Is the application architecture designed to use Availability Zones within a region?
-
-  _[Availability Zones](https://docs.microsoft.com/azure/availability-zones/az-overview#availability-zones) can be used to optimize application availability within a region by providing datacenter level fault tolerance. However, the application architecture must not share dependencies between zones to use them effectively. It is also important to note that Availability Zones may introduce performance and cost considerations for applications which are extremely 'chatty' across zones given the implied physical separation between each zone and inter-zone bandwidth charges. That also means that AZ can be considered to get higher Service Level Agreement (SLA) for lower cost. Be aware of [pricing changes](https://azure.microsoft.com/pricing/details/bandwidth/) coming to Availability Zone bandwidth starting February 2021._
-  > Use Availability Zones where applicable to improve reliability and optimize costs
-  
-    Additional resources:
-    - [Availability Zones](https://docs.microsoft.com/azure/availability-zones/az-overview#availability-zones)
-* Is there a plan to modernize the workload?
-
-  _Is there a plan to change the execution model to Serverless? To move as far as you can up the stack towards cloud-native. When the workload is serverless, it’s charged only for actual use, whereas whith traditional infrastructure there are many underlying things that need to be factored into the price. By applying an end date to the application it encourages you to discuss the goal of re-designing the application to make even better use of the cloud. It might be more expensive from an Azure cost point of view but factoring in other things like licenses, people, time to deploy can drive down cost._
-* Is component proximity required for application performance reasons?
-
-  _If all or part of the application is highly sensitive to latency it may mandate component co-locality which can limit the applicability of multi-region and multi-zone strategies._
-  > Consider using the same datacenter region, Availability Zone and [Proximity Placement Groups](https://azure.microsoft.com/blog/announcing-the-general-availability-of-proximity-placement-groups/) and other options to bring latency sensitive components closer together. Keep also in mind that additional charges may apply when chatty workloads are spread across zones and region.
-* Is the workload designed to scale independently?
-
-  _If the workload contains multiple components and one component requires scale, this triggers scale-out/up of the entire infrastructure. It needs to be evaluated if the application scale is monolithic or each component is scaled independently and for example how the database scales with the rest of the workload._
 * Is the workload deployed across multiple regions?
 
   _Multiple regions should be used for failover purposes in a disaster state, as part of either re-deployment, warm-spare active-passive, or hot-spare active-active strategies. Additional cost needs to be taken into consideration - mostly from compute, data and networking perspective, but also services like [Azure Site Recovery (ASR)](https://docs.microsoft.com/azure/site-recovery/site-recovery-overview)._
@@ -170,6 +133,43 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
     - [Failover strategies](https://docs.microsoft.com/azure/availability-zones/az-overview#availability-zones)
   
     - [About Site Recovery](https://docs.microsoft.com/azure/site-recovery/site-recovery-overview)
+* Is the workload designed to scale independently?
+
+  _If the workload contains multiple components and one component requires scale, this triggers scale-out/up of the entire infrastructure. It needs to be evaluated if the application scale is monolithic or each component is scaled independently and for example how the database scales with the rest of the workload._
+* Is component proximity required for application performance reasons?
+
+  _If all or part of the application is highly sensitive to latency it may mandate component co-locality which can limit the applicability of multi-region and multi-zone strategies._
+  > Consider using the same datacenter region, Availability Zone and [Proximity Placement Groups](https://azure.microsoft.com/blog/announcing-the-general-availability-of-proximity-placement-groups/) and other options to bring latency sensitive components closer together. Keep also in mind that additional charges may apply when chatty workloads are spread across zones and region.
+* Is there a plan to modernize the workload?
+
+  _Is there a plan to change the execution model to Serverless? To move as far as you can up the stack towards cloud-native. When the workload is serverless, it’s charged only for actual use, whereas whith traditional infrastructure there are many underlying things that need to be factored into the price. By applying an end date to the application it encourages you to discuss the goal of re-designing the application to make even better use of the cloud. It might be more expensive from an Azure cost point of view but factoring in other things like licenses, people, time to deploy can drive down cost._
+* Is the application architecture designed to use Availability Zones within a region?
+
+  _[Availability Zones](https://docs.microsoft.com/azure/availability-zones/az-overview#availability-zones) can be used to optimize application availability within a region by providing datacenter level fault tolerance. However, the application architecture must not share dependencies between zones to use them effectively. It is also important to note that Availability Zones may introduce performance and cost considerations for applications which are extremely 'chatty' across zones given the implied physical separation between each zone and inter-zone bandwidth charges. That also means that AZ can be considered to get higher Service Level Agreement (SLA) for lower cost. Be aware of [pricing changes](https://azure.microsoft.com/pricing/details/bandwidth/) coming to Availability Zone bandwidth starting February 2021._
+  > Use Availability Zones where applicable to improve reliability and optimize costs
+  
+    Additional resources:
+    - [Availability Zones](https://docs.microsoft.com/azure/availability-zones/az-overview#availability-zones)
+* Was the application built natively for the cloud or was an existing on-premises system migrated?
+
+  _Understanding if the application is cloud-native or not provides a very useful high-level indication about potential technical debt for operability and cost efficiency._
+  > While cloud-native workloads are preferred, migrated or modernized applications are reality and they might not utilize the available cloud functionality like auto-scaling, platform notifications etc. Make sure to understand the limitations and implement workarounds if available.
+* Has the application been designed to scale-out?
+
+  _Azure provides elastic scalability, however, applications must leverage a scale-unit approach to navigate service and subscription limits to ensure that individual components and the application as a whole can scale horizontally. Don't forget about scale in as well, as this is important to drive cost down. For example, scale in and out for App Service is done via rules. Often customers write scale out rule and never write scale in rule, this leaves the App Service more expensive._
+  > Design your solution with scalability in mind, leverage PaaS capabilities to [scale out](https://docs.microsoft.com/azure/architecture/guide/design-principles/scale-out) and in by adding additional instances when needed
+  
+    Additional resources:
+    - [Design to scale out](https://docs.microsoft.com/azure/architecture/guide/design-principles/scale-out)
+* Has a Business Continuity Disaster Recovery (BCDR) strategy been defined for the application and/or its key scenarios?
+
+  _A disaster recovery strategy should capture how the application responds to a disaster situation such as a regional outage or the loss of a critical platform service, using either a re-deployment, warm-spare active-passive, or hot-spare active-active approach. To drive cost down consider splitting application components and data into groups. For example: 1) must protect, 2) nice to protect, 3) ephemeral/can be rebuilt/lost, instead of protecting all data with the same policy._
+    - If you have a disaster recovery plan in another region, have you ensured you have the needed capacity quotas allocated?
+
+      _Quotas and limits typically apply at the region level and, therefore, the needed capacity should also be planned for the secondary region._
+* Is an availability strategy defined? i.e. multi-geo, full/partial
+
+  _An availability strategy should capture how the application remains available when in a failure state and should apply across all application components and the application deployment stamp as a whole such as via multi-geo scale-unit deployment approach. There are cost implications as well: More resources need to be provisioned in advance to provide high availability. Active-active setup, while more expensive than single deployment, can balance cost by lowering load on one stamp and reducing the total amount of resources needed._
 ### Targets &amp; Non-Functional Requirements
             
 * Are recovery targets such as Recovery Time Objective (RTO) and Recovery Point Objective (RPO) defined for the application and/or key scenarios?
@@ -331,39 +331,32 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
   > Use ACM or other cost management tools to understand if savings are possible
 ### Alerting
             
-* Are there alerts defined for cost thresholds and limits?
-
-  _This is to ensure that if any budget is close to threshold, the cost owner gets notified to take appropriate actions on the change._
-  > Set up alerts for cost limits and thresholds
-* Are push notifications enabled to inform responsible parties of alerts in real time?
-
-  _Do teams have to actively monitor the systems and dashboard or are alerts sent to them by email etc.? This can help identify not just operational incidents but also budget overruns._
-  > Send reliable alert notifications
-  > 
-  > *It is important that alert owners get reliably notified of alerts, which could use many communication channels such as text messages, emails or push notifications to a mobile app.*
-* Are specific owners and processes defined for each alert type?
-
-  _Having well-defined owners and response playbooks per alert is vital to optimizing operational effectiveness. Alerts don't have to be only technical, for example the budget owner should be made aware of capacity issues so that budgets can be adjusted and discussed._
-  > Define a process for alert reaction
-  > 
-  > *Instead of treating all alerts the same, there should be a well-defined process which determines what teams are responsible to react to which alert type.*
 * What technology is used for alerting?
 
   _Alerts from tools such as Splunk or Azure Monitor proactively notify or respond to operational states that deviate from norm. Alerts can also enable cost-awareness by watching budgets and limits and helping workload teams to scale appropriately._
   > Use automated alerting solution
   > 
   > *You should not rely on people to actively look for issues. Instead, an alerting solution should be in place that can push notifications to relevant teams. For example, by email, SMS or into a mobile app.*
+* Are specific owners and processes defined for each alert type?
+
+  _Having well-defined owners and response playbooks per alert is vital to optimizing operational effectiveness. Alerts don't have to be only technical, for example the budget owner should be made aware of capacity issues so that budgets can be adjusted and discussed._
+  > Define a process for alert reaction
+  > 
+  > *Instead of treating all alerts the same, there should be a well-defined process which determines what teams are responsible to react to which alert type.*
+* Are push notifications enabled to inform responsible parties of alerts in real time?
+
+  _Do teams have to actively monitor the systems and dashboard or are alerts sent to them by email etc.? This can help identify not just operational incidents but also budget overruns._
+  > Send reliable alert notifications
+  > 
+  > *It is important that alert owners get reliably notified of alerts, which could use many communication channels such as text messages, emails or push notifications to a mobile app.*
+* Are there alerts defined for cost thresholds and limits?
+
+  _This is to ensure that if any budget is close to threshold, the cost owner gets notified to take appropriate actions on the change._
+  > Set up alerts for cost limits and thresholds
 ## Capacity &amp; Service Availability Planning
     
 ### Scalability &amp; Capacity Model
             
-* Is capacity utilization monitored and used to forecast future growth?
-
-  _Predicting future growth and capacity demands can prevent outages due to insufficient provisioned capacity over time._
-  > Especially when demand is fluctuating, it is useful to monitor historical capacity utilization to derive predictions about future growth. Azure Monitor provides the ability to collect utilization metrics for Azure services so that they can be operationalized in the context of a defined capacity model. The Azure Portal can also be used to inspect current subscription usage and quota status.
-  
-    Additional resources:
-    - [Supported metrics with Azure Monitor](https://docs.microsoft.com/azure/azure-monitor/platform/metrics-supported)
 * Is there a capacity model for the application?
 
   _A capacity model should describe the relationships between the utilization of various components as a ratio, to capture when and how application components should scale-out._
@@ -371,6 +364,13 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
   
     Additional resources:
     - [Performance Efficiency - Capacity](https://docs.microsoft.com/azure/architecture/framework/scalability/capacity)
+* Is capacity utilization monitored and used to forecast future growth?
+
+  _Predicting future growth and capacity demands can prevent outages due to insufficient provisioned capacity over time._
+  > Especially when demand is fluctuating, it is useful to monitor historical capacity utilization to derive predictions about future growth. Azure Monitor provides the ability to collect utilization metrics for Azure services so that they can be operationalized in the context of a defined capacity model. The Azure Portal can also be used to inspect current subscription usage and quota status.
+  
+    Additional resources:
+    - [Supported metrics with Azure Monitor](https://docs.microsoft.com/azure/azure-monitor/platform/metrics-supported)
 ### Service SKU
             
 * Have you deployed a Hub and Spoke Design or Virtual WAN?
@@ -396,7 +396,7 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
   _As part of driving a good behavior it's important that the consumer has understood why they are paying the price for a service and also that the cost is transparent and fair to the user of the service or else it can drive wrong behavior._
 * Is the distribution of the cost done in accordance with the usage of the service?
 
-  _In order to drive down cost it can be advised to incentivize the user of driving the use of a service that helps put less burden on the platform and via this drive down cost as it falls back on the user if a good behavior is followed in order to drive down the price._
+  _In order to drive down cost, it can be advised to incentivize the user of driving the use of a service that helps put less burden on the platform and via this drive down cost as it falls back on the user if a good behavior is followed in order to drive down the price._
 * Is the workload using the right operating system for its servers?
 
   _Analyze the technology stack and identify which workloads are capable of running on Linux and which require Windows. Linux-based VMs and App Services are significantly cheaper, but require the app to run on supported stack (.NET Core, Node.js etc.)._
@@ -412,33 +412,33 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
     
 ### Connectivity
             
-* Are you using Microsoft backbone or MPLS network?
-
-  _Are you closer to your users or on-prem? If users are closer to the cloud you should use MSFT (i.e. egress traffic). MPLS is when another service provider gives you the line._
 * Does the workload use Service Endpoints or Private Link for accessing Azure PaaS services?
 
   _[Service Endpoints](https://docs.microsoft.com/azure/virtual-network/virtual-network-service-endpoints-overview) and [Private Link](https://docs.microsoft.com/azure/private-link/private-endpoint-overview) can be leveraged to restrict access to PaaS endpoints only from authorized virtual networks, effectively mitigating data intrusion risks and associated impact to application availability. Service Endpoints provide service level access to a PaaS service, while Private Link provides direct access to a specific PaaS resource to mitigate data exfiltration risks (e.g. malicious admin scenarios). Don’t forget that Private Link is a paid service and has meters for inbound and outbound data processed. Private Endpoints are charged as well._
   > Use service endpoints and private links where appropriate
+* Are you using Microsoft backbone or MPLS network?
+
+  _Are you closer to your users or on-prem? If users are closer to the cloud you should use MSFT (i.e. egress traffic). MPLS is when another service provider gives you the line._
 ### Endpoints
             
-* Are you using Azure Front Door, Azure App Gateway or Web Application Firewall?
-
-  _There are cost implications to using Front Door with Web Application Firewall enabled, but it can save costs compared to using a 3rd party solution. Front Door has a good latency, because it uses unicast. If only 1 or 2 regions are required, Application Gateway can be used. There are cost implications of having a WAF – you should check pricing of hours and GB/s._
 * Does the organization have the capability and plans in place to mitigate DDoS attacks for this workload?
 
   _DDoS attacks can be very debilitating and completely block access to your services or even take down the services, depending on the type of DDoS attack._
   > Mitigate DDoS attacks
   > 
   > *Use Azure DDoS Protection Standard for critical workloads where outage would have business impact. Also consider CDN as another layer of protection.*
+* Are you using Azure Front Door, Azure App Gateway or Web Application Firewall?
+
+  _There are cost implications to using Front Door with Web Application Firewall enabled, but it can save costs compared to using a 3rd party solution. Front Door has a good latency, because it uses unicast. If only 1 or 2 regions are required, Application Gateway can be used. There are cost implications of having a WAF – you should check pricing of hours and GB/s._
 ### Data flow
             
+* How are Azure resources connecting to the internet? Via NSG or via on-prem internet?
+
+  _Tunnelling internet traffic through on-premises can add extra cost as data has to go back to local network before it reaches the internet, this cost should be acknowledged._
 * How is the workload connected between regions? Is it using network peering or gateways?
 
   _VNET Peering has additional cost. Peering within the same region is cheaper than peering between regions or Global regions. Inbound and outbound traffic is charged at both ends of the peered networks._
   > Make sure the workload works with cross-region peering efficiently and be aware of additional costs
-* How are Azure resources connecting to the internet? Via NSG or via on-prem internet?
-
-  _Tunnelling internet traffic through on-premises can add extra cost as data has to go back to local network before it reaches the internet, this cost should be acknowledged._
 * Are you moving data between regions?
 
   _Moving data between regions can add additional cost - both on the storage layer or networking layer. It's worth reviewing if this cost is can be replaced via re-architecture or justified due to e.g. disaster recovery (DR)._
@@ -467,6 +467,10 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
       > The time it takes to perform a complete environment deployment should be fully understood as it needs to align with the recovery targets
 ### Build Environments
             
+* Are releases to production gated by having it successfully deployed and tested in other environments?
+
+  _Deploying to other environments and verifying changes before going into production can prevent bugs getting in front of end users._
+  > It is recommended to have a staged deployment process which requires changes to have been validated in test environments first before they can hit production
 * Is the application deployed to multiple environments with different configurations?
 
   _Understand the scope of the solution and distinguish between SKUs used in production and non-production environments. To drive down cost, it might be possible to for example consolidate environments for applications that are not as critical to the business and don't need the same testing._
@@ -476,31 +480,27 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
     - How many production vs. non-production environments do you have?
 
       _Provisioning non-production environments (like development, test, integration...) each on a separate infrastructure is not always necessary. E.g. using shared App Service Plans and consolidating Web Apps for development and testing environments can save costs._
-* Are releases to production gated by having it successfully deployed and tested in other environments?
-
-  _Deploying to other environments and verifying changes before going into production can prevent bugs getting in front of end users._
-  > It is recommended to have a staged deployment process which requires changes to have been validated in test environments first before they can hit production
 ### Testing &amp; Validation
             
-* Are Dev/Test offerings used correctly for the workload?
-
-  _Special SKUs and subscription offers for development and testing purposes can save costs, but have to be used properly. Dev SKUs are not meant for production deployments._
-  > Use developer SKUs for dev/test purposes
 * Are test-environments deployed automatically and deleted after use? Use of tagging for end date?
 
   _Automating test cases reduces time, cost and helps inefficient resource utilization. It also provides a structured approach to testing with test scripts. Test environments can quickly become overhead if not monitored properly, therefore stopping these resources when they are not in use enables cost saving. In order to drive down cost a good place to look is test environments that might not be used anymore. Implementing a process can help by tagging all test environments with an end date and an owner and after this date follow up with the owner if the environment is still needed and if so set a new end-of-life date._
   > Make sure to delete/deallocate resources used in test environments
+* Are Dev/Test offerings used correctly for the workload?
+
+  _Special SKUs and subscription offers for development and testing purposes can save costs, but have to be used properly. Dev SKUs are not meant for production deployments._
+  > Use developer SKUs for dev/test purposes
 ## Operational Model &amp; DevOps
     
 ### Roles &amp; Responsibilities
             
-* Are Billing account names and structure consistent with reference to or use of Departments or Services, or Organization?
-
-  _Transparency and traceability when it comes to cost in order to ensure that any discrepancies are able to be followed back to the source and be dealt with accordingly._
 * Has the application been built and maintained in-house or by an external partner?
 
   _Exploring where technical delivery capabilities reside helps to qualify operational model boundaries and estimate the cost of operating the application as well as defining a budget and cost model._
   > Explore where technical delivery capabilities reside
+* Are Billing account names and structure consistent with reference to or use of Departments or Services, or Organization?
+
+  _Transparency and traceability when it comes to cost in order to ensure that any discrepancies are able to be followed back to the source and be dealt with accordingly._
 ## Governance
     
 ### Standards
@@ -527,6 +527,10 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
     - [Tagging Strategies](https://docs.microsoft.com/azure/cloud-adoption-framework/decision-guides/resource-tagging)
 ### Financial Management &amp; Cost Models
             
+* Is there a cost owner for every service used by this workload?
+
+  _Every service should have a cost owner that is tracking and is responsible for cost. This drives responsibility and awareness on who owns the cost tracking._
+  > Establish a cost owner for each service used by the workload
 * Do all services used in this workload have a budget assigned to them?
 
   _For cost management it is recommended to have a budget even for the smallest services operated as that allows to track and understand the flow of the spend and also understand the impact of a smaller service in a bigger picture._
@@ -547,10 +551,6 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
 
   _In order to predict costs and trends it’s recommended to use forecasting to be proactive for any spending that might be going up due to higher demand than anticipated._
   > Use cost forcasting as a tool to estimate if the workload is aligned with budget
-* Is there a cost owner for every service used by this workload?
-
-  _Every service should have a cost owner that is tracking and is responsible for cost. This drives responsibility and awareness on who owns the cost tracking._
-  > Establish a cost owner for each service used by the workload
 ### Culture &amp; Dynamics
             
 * What happens to the money that you’ve saved? If you go over budget do you have to save somewhere else?
@@ -560,9 +560,6 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
 * Is there an ongoing conversation between the app owner and the business?
 
   _Is what’s delivered from IT and what the business is expecting from IT mapped to the cost of the application?_
-* When you build new workloads, are you factoring the budget into the building phase? (Is the cost associated to the criticality to the business?)
-
-  _When building new applications it’s a good practice to have a discussion with the business regarding expectations and build a budget as early as possible and document assumptions of how the IT budget for the service was calculated._
 * When new applications are introduced to the company, how is the budget defined?
 
   _It is important to have a clear understanding how an IT budget is defined. This is especially true for applications that are not built in-house, where IT budget has to be factored in as part of the delivery._
@@ -571,8 +568,15 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
 
   _As Azure changes and new services are introduced, it’s recommended that key services are revisited to see if any new services offered in Azure can help drive down cost or if new SKUs can help drive down cost. It’s recommended that this is done 1-4 times a year._
   > Revisit key Azure services to see if there were any updates which could reduce the spend
+* When you build new workloads, are you factoring the budget into the building phase? (Is the cost associated to the criticality to the business?)
+
+  _When building new applications it’s a good practice to have a discussion with the business regarding expectations and build a budget as early as possible and document assumptions of how the IT budget for the service was calculated._
 ### Licensing
             
+* Is A-HUB (Azure Hybrid Use Benefit) used to drive cost down in order to re-use licenses to drive cost down in cloud?
+
+  _Understanding your current spending on licenses can help you drive down cost in the cloud. A-HUB allows you to reuse licenses that you purchased for on-premises in Azure and via this drive down the cost as the license is already paid._
+  > See if you can use the hybrid use benefit to reuse licensing
 * Are any special discounts given to services or licenses that should be factored in when calculating new cost models for services being moved to the cloud?
 
   _When alternative cost options are considered it should be understood first if any special offers or deals are given for the existing SKUs to verify that the correct prices are being used to build a business case._
@@ -580,7 +584,3 @@ Compared to reviewing the whole Azure landscape of an organization, this focus a
 * Is there an owner for licensing and is this owner aware of any benefits that can be driven for hybrid license models?
 
   _Having a go to person in the company who understands the rules and knows what has been bought helps making sure that the right licenses are being used before building a business case for a new workload / application in Azure._
-* Is A-HUB (Azure Hybrid Use Benefit) used to drive cost down in order to re-use licenses to drive cost down in cloud?
-
-  _Understanding your current spending on licenses can help you drive down cost in the cloud. A-HUB allows you to reuse licenses that you purchased for on-premises in Azure and via this drive down the cost as the license is already paid._
-  > See if you can use the hybrid use benefit to reuse licensing

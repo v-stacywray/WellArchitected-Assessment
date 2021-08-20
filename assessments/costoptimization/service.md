@@ -43,9 +43,6 @@ This list contains design considerations and recommended configuration options, 
                             
 ## Azure Kubernetes Service (AKS)
 ### Configuration Recommendations
-* Use the Start/Stop feature in Azure Kubernetes Services (AKS).
-  > The [AKS Stop/Start cluster feature](https://docs.microsoft.com/azure/aks/start-stop-cluster) allows AKS customers to completely pause an AKS cluster, saving time and cost. The stop/start feature keeps cluster configurations in place and customers can pick up where they left off without reconfiguring the clusters.
-                            
 * Scalability
   - Enable [cluster autoscaler](https://docs.microsoft.com/azure/aks/cluster-autoscaler) to automatically adjust the number of agent nodes in response to resource constraints.
     > This ability to automatically scale up or down the number of nodes in your AKS cluster lets you run an efficient, cost-effective cluster.
@@ -61,57 +58,60 @@ This list contains design considerations and recommended configuration options, 
     > Unlike System node pools that always require running nodes, User node pools allow you to scale to 0.
                                 
                             
+* Use the Start/Stop feature in Azure Kubernetes Services (AKS).
+  > The [AKS Stop/Start cluster feature](https://docs.microsoft.com/azure/aks/start-stop-cluster) allows AKS customers to completely pause an AKS cluster, saving time and cost. The stop/start feature keeps cluster configurations in place and customers can pick up where they left off without reconfiguring the clusters.
+                            
 ## Virtual Machines
 ### Configuration Recommendations
-* Perform a review of SKUs that could benefit from Reserved Instances for 1 or 3 years or more.
-  > Purchasing reserved instances is a way to reduce Azure costs for workloads with stable usage. You have to manage utilization: if it’s too low then you are paying for resources that are not being used. One advice is to keep RI instances simple and not trying to have too much management overhead that has to be factored in as well as part of the cost.
-                            
-* Use Zone to Zone disaster recovery for virtual machines.
-  > (in preview as of 11/2020) Replicate, failover and failback your business-critical virtual machines within the same region with zones. Ideal for those that have complicated networking infrastructure and want to avoid the cost and complexity of recreating it in a secondary region.
-                            
-* Consider using Burstable (B) series VM sizes for VMs that are idle most of the time and have high usage for a certain period of time.
-  > The B-series VMs are ideal for workloads that do not need the full performance of the CPU continuously (like web servers, proof of concepts, small databases and development build environments).
-                            
-* Use Spot VMs when appropriate.
-  > Spot VMs are ideal for workloads that can be interrupted, such as highly parallel batch processing jobs. These VMs take advantage of the surplus capacity in Azure at a lower cost. They're also well suited for experimenting, development and testing of large-scale solutions.
+* Shut down VM instances which are not in use.
+  > Use the Start/Stop VMs during off-hours feature of virtual machines to minimize waste. There are many configuration options to schedule start the stop times. The feature is suitable as a low-cost automation option. Azure Advisor evaluates virtual machines based on CPU and network utilization over a time period and recommends actions like shut down or resize instances.
                             
 * Consider PaaS as an alternative to virtual machines.
   > When you use the PaaS model, operational and maintenance costs are included in the pricing and in some cases can be cheaper than managing VMs on your own.
                             
-* Shut down VM instances which are not in use.
-  > Use the Start/Stop VMs during off-hours feature of virtual machines to minimize waste. There are many configuration options to schedule start the stop times. The feature is suitable as a low-cost automation option. Azure Advisor evaluates virtual machines based on CPU and network utilization over a time period and recommends actions like shut down or resize instances.
+* Use Spot VMs when appropriate.
+  > Spot VMs are ideal for workloads that can be interrupted, such as highly parallel batch processing jobs. These VMs take advantage of the surplus capacity in Azure at a lower cost. They're also well suited for experimenting, development and testing of large-scale solutions.
+                            
+* Consider using Burstable (B) series VM sizes for VMs that are idle most of the time and have high usage for a certain period of time.
+  > The B-series VMs are ideal for workloads that do not need the full performance of the CPU continuously (like web servers, proof of concepts, small databases and development build environments).
+                            
+* Use Zone to Zone disaster recovery for virtual machines.
+  > (in preview as of 11/2020) Replicate, failover and failback your business-critical virtual machines within the same region with zones. Ideal for those that have complicated networking infrastructure and want to avoid the cost and complexity of recreating it in a secondary region.
+                            
+* Perform a review of SKUs that could benefit from Reserved Instances for 1 or 3 years or more.
+  > Purchasing reserved instances is a way to reduce Azure costs for workloads with stable usage. You have to manage utilization: if it’s too low then you are paying for resources that are not being used. One advice is to keep RI instances simple and not trying to have too much management overhead that has to be factored in as well as part of the cost.
                             
 # Data
         
 ## Azure SQL Database
 ### Configuration Recommendations
-* Optimize Queries.
-  > Optimize the queries/tables/databases using [Query Performance Insights](https://docs.microsoft.com/azure/azure-sql/database/query-performance-insight-use) and [Performance Recommendations](https://docs.microsoft.com/azure/azure-sql/database/database-advisor-find-recommendations-portal) to help reduce the resource consumption and arrive at appropriate configuration 
-                            
 * Evaluate DTU Usage.
   > Evaluate the DTU usage for all Databases and determine if they have been sized/provisioned correctly. For non-prod Databases, consider using Basic Tier or S0 and configure the DTUs accordingly, as applicable. The DTUs can be scaled on demand e.g. when running a load test, etc.
                             
 * Evaluate Azure SQL Database Serverless.
   > Consider using Azure SQL Database Serverless over Provisioned Computing Tier. Serverless is a compute tier for single databases that automatically scales compute based on workload demand and bills for the amount of compute used per second. The serverless compute tier also automatically pauses databases during inactive periods when only storage is billed and automatically resumes databases when activity returns. Azure SQL Database serverless is not suited for all scenarios, but if you have a database that is not always heavily used and if you have periods of complete inactivity, this is a very interesting solution that can you guarantee performances and that can help you on saving a lot of costs.
                             
+* Optimize Queries.
+  > Optimize the queries/tables/databases using [Query Performance Insights](https://docs.microsoft.com/azure/azure-sql/database/query-performance-insight-use) and [Performance Recommendations](https://docs.microsoft.com/azure/azure-sql/database/database-advisor-find-recommendations-portal) to help reduce the resource consumption and arrive at appropriate configuration 
+                            
 * Consider Reserved Capacity for Azure SQL Database.
   > Compute costs associated with Azure SQL Database can be reduced by using [Reservation Discount](https://docs.microsoft.com/azure/cost-management-billing/reservations/understand-reservation-charges). Once the total compute capacity and performance tier for Azure SQL databases in a region is determined, this information can be used to reserve the capacity. The reservation can span 1 or 3 years. Significant cost optimization can be realized with this commitment. Refer to documentation on [Save costs for resources with reserved capacity](https://docs.microsoft.com/azure/azure-sql/database/reserved-capacity-overview) for more details.
                             
 ## Azure Database For PostgreSQL
 ### Design Considerations
-* The cloud native design of the Single Server service allows it to support 99.99% of availability eliminating the cost of passive hot standby.
-* Take advantage of the scaling capabilities of Azure Database for PostgreSQL to decrease consumption cost whenever possible.
-  > This [how to article](https://techcommunity.microsoft.com/t5/azure-database-support-blog/how-to-auto-scale-an-azure-database-for-mysql-postgresql/ba-p/369177) from Microsoft Support covers the automation process using runbooks to scale up and down your database as needed.
-                            
-* Plan your RPO (Recovery Point Objective) according to your operation level requirement.
-  > There is no additional charge for backup storage for up to 100% of your total provisioned server storage. Additional consumption of backup storage will be charged in GB/month.
+* Hyperscale (Citus) provides dynamic scalability without the cost of manual sharding with low application re-architecture required.
+  > Distributing table rows across multiple PostgreSQL servers is a key technique for scalable queries in Hyperscale (Citus). Together, multiple nodes can hold more data than a traditional database, and in many cases can use worker CPUs in parallel to execute queries potentially decreasing the database costs. Follow this [Shard data on worker nodes tutorial](https://docs.microsoft.com/en-us/azure/postgresql/tutorial-hyperscale-shard) to practice this potential savings architecture pattern.
                             
 * Consider using Flexible Server SKU for non-production workloads.
   > Flexible servers provide better cost optimization controls with ability to stop/start your server and burstable compute tier that is ideal for workloads that do not need full compute capacity continuously.
                             
-* Hyperscale (Citus) provides dynamic scalability without the cost of manual sharding with low application re-architecture required.
-  > Distributing table rows across multiple PostgreSQL servers is a key technique for scalable queries in Hyperscale (Citus). Together, multiple nodes can hold more data than a traditional database, and in many cases can use worker CPUs in parallel to execute queries potentially decreasing the database costs. Follow this [Shard data on worker nodes tutorial](https://docs.microsoft.com/en-us/azure/postgresql/tutorial-hyperscale-shard) to practice this potential savings architecture pattern.
+* Plan your RPO (Recovery Point Objective) according to your operation level requirement.
+  > There is no additional charge for backup storage for up to 100% of your total provisioned server storage. Additional consumption of backup storage will be charged in GB/month.
                             
+* Take advantage of the scaling capabilities of Azure Database for PostgreSQL to decrease consumption cost whenever possible.
+  > This [how to article](https://techcommunity.microsoft.com/t5/azure-database-support-blog/how-to-auto-scale-an-azure-database-for-mysql-postgresql/ba-p/369177) from Microsoft Support covers the automation process using runbooks to scale up and down your database as needed.
+                            
+* The cloud native design of the Single Server service allows it to support 99.99% of availability eliminating the cost of passive hot standby.
 ### Configuration Recommendations
 * Choose the appropriate server size for your workload.
   > Configuration options: [Single Server](https://docs.microsoft.com/en-us/azure/postgresql/concepts-pricing-tiers), [Flexible Server](https://docs.microsoft.com/en-us/azure/postgresql/flexible-server/concepts-compute-storage), [Hyperscale (Citus)](https://docs.microsoft.com/en-us/azure/postgresql/concepts-hyperscale-configuration-options).
@@ -149,14 +149,14 @@ This list contains design considerations and recommended configuration options, 
   > (in preview as of 11/2020) Minimize your storage cost automatically by setting up a policy based on last access time to: cost-effective backup storage options. Transition your data from a hotter access tier to a cooler access tier (hot to cool, cool to archive, or hot to archive) if there is no access for a period. Delete your data if there is no access for an extended period.
                             
 ### Configuration Recommendations
-* Use lifecycle policy to move data between access tiers.
-  > Lifecycle management policy periodically moves data between tiers. Policies can move data based on rules that specified by the user. For example, you might create rules that move blobs to the archive tier if that blob has not been modified in 90 days. Unused data can be also completely removed using a policy. By creating policies that adjust the access tier of your data, you can design the least expensive storage options for your need. 
+* Consider cost savings of reserving data capacity for block blob storage.
+  > Money can be saved by reserving capacity for block blob and for Azure Data Lake Storage gen 2 data in standard storage account when customer commits to 1 or 3 years reservation.
                             
 * Organize data into access tiers.
   > You can reduce cost by placing blob data into the most cost-effective access tier. Place frequently accessed data in hot tier, less frequent in cold or archive tier. Use Premium storage for workloads with high transaction volumes or ones where latency is critical.
                             
-* Consider cost savings of reserving data capacity for block blob storage.
-  > Money can be saved by reserving capacity for block blob and for Azure Data Lake Storage gen 2 data in standard storage account when customer commits to 1 or 3 years reservation.
+* Use lifecycle policy to move data between access tiers.
+  > Lifecycle management policy periodically moves data between tiers. Policies can move data based on rules that specified by the user. For example, you might create rules that move blobs to the archive tier if that blob has not been modified in 90 days. Unused data can be also completely removed using a policy. By creating policies that adjust the access tier of your data, you can design the least expensive storage options for your need. 
                             
 ## Disks
 ### Design Considerations

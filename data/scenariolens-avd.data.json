@@ -5,7 +5,7 @@
       "scenario/avd"
     ],
     "lens": "scenario",
-    "category": "AVD",
+    "category": "Azure Virtual Desktop (AVD)",
     "subCategory": "FSLogix",
     "title": "[FSLogix](https://docs.microsoft.com/en-us/azure/architecture/example-scenario/wvd/windows-virtual-desktop-fslogix) technology allows for users profiles to be stored in a central location and accessed by AVD Session Hosts, side loading the disks in a seamless manner. If using a solution where your users can sign into different Azure Virtual Desktop Session Hosts (Multi-session for example), [FSLogix](https://docs.microsoft.com/azure/architecture/example-scenario/wvd/windows-virtual-desktop-fslogix) should be used to centralize users' profiles.",
     "recommendation": {
@@ -63,7 +63,7 @@
       "scenario/avd"
     ],
     "lens": "scenario",
-    "category": "AVD",
+    "category": "Azure Virtual Desktop (AVD)",
     "subCategory": "Networking & Connectivity",
     "title": "Placement of your Azure Virtual Desktop session hosts in your network is a key consideration and should be included in your design",
     "recommendation": {
@@ -101,7 +101,7 @@
       "scenario/avd"
     ],
     "lens": "scenario",
-    "category": "AVD",
+    "category": "Azure Virtual Desktop (AVD)",
     "subCategory": "Identity & Access Control",
     "title": "Azure Virtual Desktop requires that there is a hybrid identity solution implemented",
     "recommendation": {
@@ -149,7 +149,7 @@
       "scenario/avd"
     ],
     "lens": "scenario",
-    "category": "AVD",
+    "category": "Azure Virtual Desktop (AVD)",
     "subCategory": "Management & Monitoring",
     "title": "Managing and monitoring any Azure service is a core component from an operations standpoint which is why this is included in Design Considerations",
     "recommendation": {

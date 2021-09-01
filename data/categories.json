@@ -400,7 +400,7 @@
     ]
   },
   {
-    "title": "AVD",
+    "title": "Azure Virtual Desktop (AVD)",
     "subCategories":[
       {
         "title": "Management & Monitoring"

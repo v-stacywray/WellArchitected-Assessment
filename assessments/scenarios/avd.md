@@ -1,13 +1,13 @@
-# Scenario Azure Virtual Deskop
+# Scenario Azure Virtual Desktop
 
 # Navigation Menu
 
-  - [AVD](#AVD)
+  - [Azure Virtual Desktop (AVD)](#Azure-Virtual-Desktop-AVD)
     - [Management &amp; Monitoring](#Management--Monitoring)
     - [FSLogix](#FSLogix)
     - [Networking &amp; Connectivity](#Networking--Connectivity)
     - [Identity &amp; Access Control](#Identity--Access-Control)
-# AVD
+# Azure Virtual Desktop (AVD)
         
 ## Management &amp; Monitoring
 ### Design Considerations

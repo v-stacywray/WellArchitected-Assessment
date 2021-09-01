@@ -403,6 +403,23 @@
     ]
   },
   {
+    "title": "Azure Virtual Desktop (AVD)",
+    "subCategories":[
+      {
+        "title": "Management & Monitoring"
+      },
+      {
+        "title": "FSLogix"
+      },
+      {
+        "title": "Networking & Connectivity"
+      },
+      {
+        "title": "Identity & Access Control"
+      }
+     ]
+  },
+  {
     "title": "Monitoring",
     "subCategories": [
       {

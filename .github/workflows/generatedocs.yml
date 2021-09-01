@@ -132,7 +132,7 @@ jobs:
               }
               else
               {
-                  $category = $validCategories | Where-Object title -match $item.category
+                  $category = $validCategories | Where-Object title -In $item.category
                   if($item.subCategory -NotIn $category.subCategories.title)
                   {
                       Write-Warning "Sub Category '$($item.subCategory)' for category '$($category.title)' does not exist in categories.json. Item: '$($item.title)'"
